@@ -11,8 +11,4 @@
     <ProjectReference Include="..\MSSQLServer\MSSQLServer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Implements\" />
-  </ItemGroup>
-
 </Project>
