@@ -9,7 +9,7 @@ using MSSQLServer.EntitiesModels;
 
 namespace Infrastructure.Implements;
 
-internal class BodyMeasurementRepository : IBodyMeasurementRepository
+public class BodyMeasurementRepository : IBodyMeasurementRepository
 {
     private readonly GymManagementContext _context;
 
