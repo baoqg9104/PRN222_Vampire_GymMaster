@@ -1,4 +1,5 @@
-﻿using MSSQLServer.EntitiesModels;
+﻿using Core.Interfaces;
+using MSSQLServer.EntitiesModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace Services.Services;
 
 public class TrainerAssignmentService : ITrainerAssignmentService
 {
-    private readonly ITrainerAssignmentService _trainerAssignmentService;
-    public TrainerAssignmentService(ITrainerAssignmentService trainerAssignmentService) { _trainerAssignmentService = trainerAssignmentService; }
+    private readonly ITrainerAssignmentRepository _trainerAssignmentService;
+    public TrainerAssignmentService(ITrainerAssignmentRepository trainerAssignmentService) { _trainerAssignmentService = trainerAssignmentService; }
     public async Task<TrainerAssignment> AddAsync(TrainerAssignment trainerAssignment)
     {
         return await _trainerAssignmentService.AddAsync(trainerAssignment);

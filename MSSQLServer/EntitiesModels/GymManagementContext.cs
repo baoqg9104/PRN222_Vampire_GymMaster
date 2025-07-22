@@ -34,18 +34,18 @@ public partial class GymManagementContext : DbContext
 
     public virtual DbSet<WorkoutSession> WorkoutSessions { get; set; }
 
-    private string GetConnectionString()
-    {
-        IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true, true).Build();
-        return configuration["ConnectionStrings:DefaultConnectionString"];
-    }
+    //private string GetConnectionString()
+    //{
+    //    IConfiguration configuration = new ConfigurationBuilder()
+    //            .SetBasePath(Directory.GetCurrentDirectory())
+    //            .AddJsonFile("appsettings.json", true, true).Build();
+    //    return configuration["ConnectionStrings:DefaultConnectionString"];
+    //}
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer(GetConnectionString());
-    }
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    optionsBuilder.UseSqlServer(GetConnectionString());
+    //}
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

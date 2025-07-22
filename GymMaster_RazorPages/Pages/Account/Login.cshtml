@@ -1,0 +1,32 @@
+﻿@page
+@model GymMaster_RazorPages.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>Login</h1>
+
+<h4>AccountMember</h4>
+
+<div>
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Account.Email">Email</label>
+            <input asp-for="Account.Email" class="form-control" />
+            <span asp-validation-for="Account.Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Account.PasswordHash">Password</label>
+            <input asp-for="Account.PasswordHash" class="form-control" />
+            <span asp-validation-for="Account.PasswordHash" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <div class="text-danger">@Model.Message</div>
+        }
+    </form>
+</div>

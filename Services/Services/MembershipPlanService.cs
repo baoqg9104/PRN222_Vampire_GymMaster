@@ -1,4 +1,5 @@
-﻿using MSSQLServer.EntitiesModels;
+﻿using Core.Interfaces;
+using MSSQLServer.EntitiesModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace Services.Services;
 
 public class MembershipPlanService : IMembershipPlanService
 {
-    private readonly IMembershipPlanService _membershipPlanService;
-    public MembershipPlanService(IMembershipPlanService membershipPlanService) { _membershipPlanService = membershipPlanService; }
+    private readonly IMembershipPlanRepository _membershipPlanService;
+    public MembershipPlanService(IMembershipPlanRepository membershipPlanService) { _membershipPlanService = membershipPlanService; }
     public async Task<MembershipPlan> AddAsync(MembershipPlan membershipPlan)
     {
         return await _membershipPlanService.AddAsync(membershipPlan);

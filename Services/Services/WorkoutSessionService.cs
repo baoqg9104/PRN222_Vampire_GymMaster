@@ -1,4 +1,5 @@
-﻿using MSSQLServer.EntitiesModels;
+﻿using Core.Interfaces;
+using MSSQLServer.EntitiesModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace Services.Services
 {
     public class WorkoutSessionervice : IWorkoutSessionService
     {
-        private readonly IWorkoutSessionService _workoutSessionService;
-        public WorkoutSessionervice(IWorkoutSessionService workoutSessionService) { _workoutSessionService = workoutSessionService; }
+        private readonly IWorkoutSessionRepository _workoutSessionService;
+        public WorkoutSessionervice(IWorkoutSessionRepository workoutSessionService) { _workoutSessionService = workoutSessionService; }
 
         public async Task<WorkoutSession> AddAsync(WorkoutSession workoutSession)
         {
