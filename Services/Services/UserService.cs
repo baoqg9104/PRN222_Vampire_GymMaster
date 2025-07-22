@@ -46,5 +46,10 @@ namespace Services.Services
         {
             return await _userRepository.UpdateAsync(user);
         }
+
+        public User Login(string email, string password)
+        {
+            return _userRepository.Login(email, password);
+        }
     }
 }

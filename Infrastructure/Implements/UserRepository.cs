@@ -71,5 +71,13 @@ namespace Infrastructure.Implements
             await _context.SaveChangesAsync();
             return user;
         }
+
+        public User Login(string email, string password)
+        {
+
+            // Check if the email and password match an existing account
+            var lionAccount = _context.Users.FirstOrDefault(x => x.Email == email && x.PasswordHash == password);
+            return lionAccount;
+        }
     }
 }

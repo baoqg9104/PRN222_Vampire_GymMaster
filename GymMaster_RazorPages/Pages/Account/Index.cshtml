@@ -1,0 +1,102 @@
+﻿@page
+@model GymMaster_RazorPages.Pages.Account.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].PasswordHash)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].Role)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].Specialization)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].Certification)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].HourlyRate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].FitnessGoals)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].MedicalNotes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User[0].CreatedAt)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.User) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PasswordHash)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Role)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Specialization)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Certification)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HourlyRate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FitnessGoals)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MedicalNotes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.UserId">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.UserId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.UserId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

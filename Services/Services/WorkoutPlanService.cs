@@ -1,4 +1,5 @@
-﻿using MSSQLServer.EntitiesModels;
+﻿using Core.Interfaces;
+using MSSQLServer.EntitiesModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace Services.Services
 {
     public class WorkoutPlanService : IWorkoutPlanService
     {
-        private readonly IWorkoutPlanService _workoutPlanService;
-        public WorkoutPlanService(IWorkoutPlanService workoutPlanService) { _workoutPlanService = workoutPlanService; }
+        private readonly IWorkoutPlanRepository _workoutPlanService;
+        public WorkoutPlanService(IWorkoutPlanRepository workoutPlanService) { _workoutPlanService = workoutPlanService; }
         public async Task<WorkoutPlan> AddAsync(WorkoutPlan workoutPlan)
         {
             return await _workoutPlanService.AddAsync(workoutPlan);
