@@ -30,6 +30,11 @@ body {
   text-align: start;
 }
 
+
+.rounded-circle {
+    border-radius: 20% !important;
+}
+
 /* Trainer Dashboard specific styles */
 .trainer-dashboard .card {
     transition: transform 0.2s;

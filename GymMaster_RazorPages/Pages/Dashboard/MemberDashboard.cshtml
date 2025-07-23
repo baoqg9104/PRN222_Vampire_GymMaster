@@ -101,10 +101,10 @@
                     {
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <img src="https://via.placeholder.com/80" class="rounded-circle" alt="Trainer">
+                                <img width="50%" src="@Model.CurrentTrainer.LastName" class="rounded-circle" alt="Trainer">
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h5>@Model.CurrentTrainer.FirstName @Model.CurrentTrainer.LastName</h5>
+                                <h3>@Model.CurrentTrainer.FirstName</h3>
                                 <p class="mb-1"><strong>Chuyên môn:</strong> @Model.CurrentTrainer.Specialization</p>
                                 <p class="mb-1"><strong>Chứng chỉ:</strong> @Model.CurrentTrainer.Certification</p>
                                 <a asp-page="/Trainer/Details" asp-route-id="@Model.CurrentTrainer.UserId" 
