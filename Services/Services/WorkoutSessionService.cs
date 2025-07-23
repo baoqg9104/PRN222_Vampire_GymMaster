@@ -42,5 +42,11 @@ namespace Services.Services
         {
             return await _workoutSessionService.UpdateAsync(workoutSession);
         }
+
+
+        public async Task<IEnumerable<WorkoutSession>> GetByUserIdAsync(int userId)
+        {
+            return await _workoutSessionService.GetByUserIdAsync(userId);
+        }
     }
 }

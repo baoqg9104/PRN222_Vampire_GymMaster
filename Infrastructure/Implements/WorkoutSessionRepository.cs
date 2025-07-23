@@ -66,5 +66,13 @@ namespace Infrastructure.Implements
             await _context.SaveChangesAsync();
             return workoutSession;
         }
+
+        public async Task<IEnumerable<WorkoutSession>> GetByUserIdAsync(int userId)
+        {
+            return await _context.WorkoutSessions
+                .Where(bm => bm.MemberId == userId)
+                .Include(bm => bm.Member)
+                .ToListAsync();
+        }
     }
 }

@@ -1,0 +1,136 @@
+﻿@page  
+@model GymMaster_RazorPages.Pages.Dashboard.MemberDashboardModel
+@{
+    ViewData["Title"] = "Hồ sơ thành viên";
+}
+ 
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5>Thông tin cá nhân</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="CurrentUser.UserId" />
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CurrentUser.Email" class="control-label"></label>
+                            <input asp-for="CurrentUser.Email" class="form-control" readonly />
+                            <span asp-validation-for="CurrentUser.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CurrentUser.FirstName" class="control-label">Tên</label>
+                            <input asp-for="CurrentUser.FirstName" class="form-control" />
+                            <span asp-validation-for="CurrentUser.FirstName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CurrentUser.LastName" class="control-label">Họ</label>
+                            <input asp-for="CurrentUser.LastName" class="form-control" />
+                            <span asp-validation-for="CurrentUser.LastName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CurrentUser.Phone" class="control-label">Điện thoại</label>
+                            <input asp-for="CurrentUser.Phone" class="form-control" />
+                            <span asp-validation-for="CurrentUser.Phone" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CurrentUser.FitnessGoals" class="control-label">Mục tiêu tập luyện</label>
+                            <textarea asp-for="CurrentUser.FitnessGoals" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="CurrentUser.FitnessGoals" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CurrentUser.MedicalNotes" class="control-label">Ghi chú sức khỏe</label>
+                            <textarea asp-for="CurrentUser.MedicalNotes" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="CurrentUser.MedicalNotes" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Cập nhật</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5>Gói tập hiện tại</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.CurrentMembership != null)
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Tên gói:</strong> @Model.CurrentMembership.Plan.Name</p>
+                                <p><strong>Ngày bắt đầu:</strong> @Model.CurrentMembership.StartDate.ToString("dd/MM/yyyy")</p>
+                                <p><strong>Ngày hết hạn:</strong> @Model.CurrentMembership.EndDate.ToString("dd/MM/yyyy")</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Mô tả:</strong> @Model.CurrentMembership.Plan.Description</p>
+                                <p><strong>Giá:</strong> @Model.CurrentMembership.Plan.Price.ToString("C")</p>
+                                <a asp-page="/Membership/Upgrade" class="btn btn-sm btn-outline-primary">Nâng cấp gói</a>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            Bạn chưa đăng ký gói tập nào
+                            <a asp-page="/Membership/Register" class="alert-link">Đăng ký ngay</a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5>Huấn luyện viên của bạn</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.CurrentTrainer != null)
+                    {
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <img src="https://via.placeholder.com/80" class="rounded-circle" alt="Trainer">
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5>@Model.CurrentTrainer.FirstName @Model.CurrentTrainer.LastName</h5>
+                                <p class="mb-1"><strong>Chuyên môn:</strong> @Model.CurrentTrainer.Specialization</p>
+                                <p class="mb-1"><strong>Chứng chỉ:</strong> @Model.CurrentTrainer.Certification</p>
+                                <a asp-page="/Trainer/Details" asp-route-id="@Model.CurrentTrainer.UserId" 
+                                   class="btn btn-sm btn-outline-success mt-2">
+                                    Xem chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            Bạn chưa được phân công huấn luyện viên
+                            <a asp-page="/Trainer/Request" class="alert-link">Yêu cầu ngay</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" asp-page="/Account/Logout">
+    <button type="submit" class="btn btn-danger">Logout</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

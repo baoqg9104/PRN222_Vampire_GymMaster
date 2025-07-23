@@ -14,5 +14,7 @@ namespace Services.Services
         Task<UserMembership> AddAsync(UserMembership user);
         Task<UserMembership> UpdateAsync(UserMembership user);
         Task<bool> DeleteAsync(int id);
+
+        Task<UserMembership> GetCurrentMembershipAsync(int userId); 
     }
 }

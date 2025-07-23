@@ -25,7 +25,7 @@ namespace GymMaster_RazorPages.Pages.Account
         {
             if (User.Identity.IsAuthenticated == true)
             {
-                return RedirectToPage("/Account/Index");
+                return RedirectToPage("/Dashboard/MemberDashboard");
             }
             return Page();
         }
@@ -34,7 +34,7 @@ namespace GymMaster_RazorPages.Pages.Account
         {
             if (User.Identity.IsAuthenticated == true)
             {
-                return RedirectToPage("/Account/Index");
+                return RedirectToPage("/Dashboard/MemberDashboard");
             }
 
 
@@ -62,7 +62,7 @@ namespace GymMaster_RazorPages.Pages.Account
                     ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
                 });
 
-                return RedirectToPage("/Account/Index");
+                return RedirectToPage("/Dashboard/MemberDashboard");
             }
 
             Message = "User does not exist or password is incorrect.";

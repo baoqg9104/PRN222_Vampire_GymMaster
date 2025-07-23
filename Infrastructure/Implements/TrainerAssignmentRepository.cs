@@ -15,6 +15,20 @@ public class TrainerAssignmentRepository: ITrainerAssignmentRepository
 
     public TrainerAssignmentRepository(GymManagementContext context) {  _context = context; }
 
+    public async Task<User> GetCurrentTrainerAsync(int userId)
+    {
+        // Get the most recent active trainer assignment for the member
+        var currentAssignment = await _context.TrainerAssignments
+            .Include(ta => ta.Trainer) // Include the Trainer navigation property
+            .Where(ta => ta.MemberId == userId &&
+                        ta.IsActive == true &&
+                        (ta.EndDate == null || ta.EndDate >= DateOnly.FromDateTime(DateTime.Today)))
+            .OrderByDescending(ta => ta.StartDate)
+            .FirstOrDefaultAsync();
+
+        // Return the Trainer User object if assignment exists
+        return currentAssignment?.Trainer;
+    }
     public async Task<TrainerAssignment> AddAsync(TrainerAssignment trainerAssignment)
     {
         if(trainerAssignment == null) 
@@ -70,4 +84,6 @@ public class TrainerAssignmentRepository: ITrainerAssignmentRepository
         await _context.SaveChangesAsync();
         return trainerAssignment;
     }
+
+    
 }

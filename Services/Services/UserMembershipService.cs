@@ -37,6 +37,11 @@ namespace Services.Services
             return await _userMembershipRepository.GetByIdAsync(id);
         }
 
+        public Task<UserMembership> GetCurrentMembershipAsync(int userId)
+        {
+            return _userMembershipRepository.GetCurrentMembershipAsync(userId);
+        }
+
         public async Task<UserMembership> UpdateAsync(UserMembership user)
         {
             return await _userMembershipRepository.UpdateAsync(user);
