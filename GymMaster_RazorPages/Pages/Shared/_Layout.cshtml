@@ -1,18 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    @if (User.IsInRole("Member"))
-    {
-        <li class="nav-item"><a class="nav-link" asp-page="/Member/Dashboard">Trang thành viên</a></li>
-    }
-    @if (User.IsInRole("Trainer"))
-    {
-        <li class="nav-item"><a class="nav-link" asp-page="/Trainer/Dashboard">Trang huấn luyện viên</a></li>
-    }
-    @if (User.IsInRole("Admin"))
-    {
-        <li class="nav-item"><a class="nav-link" asp-page="/Admin/Dashboard">Quản trị hệ thống</a></li>
-    }
+    
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - GymMaster_RazorPages</title>
@@ -24,9 +13,10 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">GymMaster_RazorPages</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -41,6 +31,18 @@
                     </ul>
                 </div>
             </div>
+            @if (User.IsInRole("Member"))
+            {
+                <div class="nav-item"><a class="nav-link" asp-page="/Member/Dashboard">Trang thành viên</a></div>
+            }
+            @if (User.IsInRole("Trainer"))
+            {
+                <div class="nav-item"><a class="nav-link" asp-page="/Trainer/Dashboard">Trang huấn luyện viên</a></div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-item"><a class="nav-link" asp-page="/Admin/Dashboard">Quản trị hệ thống</a></div>
+            }
         </nav>
     </header>
     <div class="container">

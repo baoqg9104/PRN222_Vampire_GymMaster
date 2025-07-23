@@ -25,6 +25,7 @@ namespace GymMaster_RazorPages.Pages.Account
         {
             if (User.Identity.IsAuthenticated == true)
             {
+                if(User.IsInRole("Trainer"))  return RedirectToPage("/Dashboard/TrainerDasboard");    
                 return RedirectToPage("/Dashboard/MemberDashboard");
             }
             return Page();
@@ -34,6 +35,8 @@ namespace GymMaster_RazorPages.Pages.Account
         {
             if (User.Identity.IsAuthenticated == true)
             {
+                if (User.IsInRole("Trainer")) return RedirectToPage("/Dashboard/TrainerDasboard");
+
                 return RedirectToPage("/Dashboard/MemberDashboard");
             }
 
@@ -61,6 +64,10 @@ namespace GymMaster_RazorPages.Pages.Account
                     IsPersistent = false,
                     ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
                 });
+
+            if (userAccount.Role == "Trainer") return RedirectToPage("/Dashboard/TrainerDasboard");
+
+                
 
                 return RedirectToPage("/Dashboard/MemberDashboard");
             }

@@ -29,3 +29,23 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* Trainer Dashboard specific styles */
+.trainer-dashboard .card {
+    transition: transform 0.2s;
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 0.8rem;
+    padding: 0.35em 0.65em;
+}

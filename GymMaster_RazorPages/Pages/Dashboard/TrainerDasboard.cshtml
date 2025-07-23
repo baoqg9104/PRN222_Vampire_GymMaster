@@ -1,0 +1,113 @@
+﻿ 
+@page
+@model GymMaster_RazorPages.Pages.Dashboard.TrainerDasboardModel
+@{
+    ViewData["Title"] = "Trainer Dashboard";
+}
+
+<div class="container trainer-dashboard">
+    <h2 class="my-4">My Clients</h2>
+
+    @if (Model.TrainerAssignments.Any())
+    {
+        <div class="row">
+            @foreach (var assignment in Model.TrainerAssignments)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5>@assignment.Member.FirstName @assignment.Member.LastName</h5>
+                                <span class="badge bg-light text-dark">@assignment.Membership.Plan.Name</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h6>Membership Details</h6>
+                                <p><strong>Start Date:</strong> @assignment.Membership.StartDate.ToShortDateString()</p>
+                                <p><strong>End Date:</strong> @assignment.Membership.EndDate.ToShortDateString()</p>
+                                <p><strong>Status:</strong> 
+                                    <span class="badge @((bool)assignment.Membership.IsActive ? "bg-success" : "bg-warning")">
+                                        @((bool)assignment.Membership.IsActive ? "Active" : "Inactive")
+                                    </span>
+                                </p>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6>Workout Plans</h6>
+                                    <a asp-page="/Trainer/CreateWorkoutPlan" asp-route-assignmentId="@assignment.AssignmentId" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        Add New Plan
+                                    </a>
+                                </div>
+                                
+                                @if (assignment.WorkoutPlans.Any())
+                                {
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Day</th>
+                                                    <th>Exercise</th>
+                                                    <th>Sets x Reps</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var plan in assignment.WorkoutPlans)
+                                                {
+                                                    <tr>
+                                                        <td>@GetDayName(plan.DayOfWeek)</td>
+                                                        <td>@plan.ExerciseName</td>
+                                                        <td>@plan.Sets x @plan.Reps</td>
+                                                        <td>
+                                                            <a asp-page="/Trainer/EditWorkoutPlan" asp-route-id="@plan.PlanId" 
+                                                               class="btn btn-sm btn-outline-secondary">Edit</a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-info">No workout plans created yet.</div>
+                                }
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a asp-page="/Trainer/ClientProgress" asp-route-memberId="@assignment.Member.UserId" 
+                               class="btn btn-sm btn-info">View Progress</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">You don't have any active client assignments.</div>
+    }
+</div>
+<form method="post" asp-page="/Account/Logout">
+    <button type="submit" class="btn btn-danger">Logout</button>
+</form>
+
+@functions {
+    public string GetDayName(int dayOfWeek)
+    {
+        return dayOfWeek switch
+        {
+            1 => "Monday",
+            2 => "Tuesday",
+            3 => "Wednesday",
+            4 => "Thursday",
+            5 => "Friday",
+            6 => "Saturday",
+            7 => "Sunday",
+            _ => "Unknown"
+        };
+    }
+}
