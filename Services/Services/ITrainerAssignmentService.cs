@@ -15,4 +15,6 @@ public interface ITrainerAssignmentService
     Task<TrainerAssignment> AddAsync(TrainerAssignment trainerAssignment);
     Task<TrainerAssignment> UpdateAsync(TrainerAssignment trainerAssignment);
     Task<bool> DeleteAsync(int id);
+    Task<User> GetCurrentTrainerAsync(int userId);
+
 }

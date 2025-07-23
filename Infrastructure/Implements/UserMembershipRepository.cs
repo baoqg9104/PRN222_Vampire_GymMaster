@@ -63,5 +63,14 @@ namespace Infrastructure.Implements
             await _context.SaveChangesAsync();
             return user;
         }
+
+        public async Task<UserMembership> GetCurrentMembershipAsync(int userId)
+        {
+            return await _context.UserMemberships
+                .Include(um => um.Plan) // Include the related MembershipPlan
+                .Where(um => um.UserId == userId)
+                .OrderByDescending(um => um.StartDate)
+                .FirstOrDefaultAsync();
+        }
     }
 }

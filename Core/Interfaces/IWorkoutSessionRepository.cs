@@ -15,5 +15,6 @@ namespace Core.Interfaces
         Task<WorkoutSession> AddAsync(WorkoutSession workoutSession);
         Task<WorkoutSession> UpdateAsync(WorkoutSession workoutSession);
         Task<bool> DeleteAsync(int id);
+        Task<IEnumerable<WorkoutSession>> GetByUserIdAsync(int userId);
     }
 }

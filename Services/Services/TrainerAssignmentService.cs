@@ -41,4 +41,9 @@ public class TrainerAssignmentService : ITrainerAssignmentService
     {
         return await _trainerAssignmentService.UpdateAsync(trainerAssignment);
     }
+
+    public Task<User> GetCurrentTrainerAsync(int userId)
+    {
+        return _trainerAssignmentService.GetCurrentTrainerAsync(userId);
+    }
 }

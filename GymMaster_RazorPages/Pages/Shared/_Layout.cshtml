@@ -1,6 +1,18 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+    @if (User.IsInRole("Member"))
+    {
+        <li class="nav-item"><a class="nav-link" asp-page="/Member/Dashboard">Trang thành viên</a></li>
+    }
+    @if (User.IsInRole("Trainer"))
+    {
+        <li class="nav-item"><a class="nav-link" asp-page="/Trainer/Dashboard">Trang huấn luyện viên</a></li>
+    }
+    @if (User.IsInRole("Admin"))
+    {
+        <li class="nav-item"><a class="nav-link" asp-page="/Admin/Dashboard">Quản trị hệ thống</a></li>
+    }
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - GymMaster_RazorPages</title>
