@@ -46,12 +46,12 @@
 
                         <dt class="col-sm-4 details-label"><i class="bi bi-calendar2-date"></i> End Date</dt>
                         <dd class="col-sm-8 details-value">
-                            @(Model.TrainerAssignment.EndDate.HasValue ? Model.TrainerAssignment.EndDate.Value.ToString("yyyy-MM-dd") : "<span class='text-muted'>N/A</span>")
+                            @(Model.TrainerAssignment.EndDate.HasValue ? Model.TrainerAssignment.EndDate.Value.ToString("yyyy-MM-dd") : "None")
                         </dd>
 
                         <dt class="col-sm-4 details-label"><i class="bi bi-bullseye"></i> Goals</dt>
                         <dd class="col-sm-8 details-value">
-                            @(!string.IsNullOrWhiteSpace(Model.TrainerAssignment.Goals) ? Model.TrainerAssignment.Goals : "<span class='text-muted'>N/A</span>")
+                            @(!string.IsNullOrWhiteSpace(Model.TrainerAssignment.Goals) ? Model.TrainerAssignment.Goals : "None")
                         </dd>
 
                         <dt class="col-sm-4 details-label"><i class="bi bi-toggle-on"></i> Status</dt>
