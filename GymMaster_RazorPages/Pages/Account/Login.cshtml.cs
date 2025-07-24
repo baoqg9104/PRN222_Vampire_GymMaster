@@ -25,7 +25,7 @@ namespace GymMaster_RazorPages.Pages.Account
         {
             if (User.Identity.IsAuthenticated == true)
             {
-                if(User.IsInRole("Trainer"))  return RedirectToPage("/Dashboard/TrainerDasboard");    
+                if (User.IsInRole("Trainer")) return RedirectToPage("/Dashboard/TrainerDasboard");
                 return RedirectToPage("/Dashboard/MemberDashboard");
             }
             return Page();
@@ -41,7 +41,7 @@ namespace GymMaster_RazorPages.Pages.Account
             }
 
 
-            var userAccount = _userService.Login(Account.Email,  Account.PasswordHash);
+            var userAccount = _userService.Login(Account.Email, Account.PasswordHash);
             //if (lionAccount == null)
             //{
             //    Message = "User does not exist or password is incorrect!";
@@ -54,6 +54,7 @@ namespace GymMaster_RazorPages.Pages.Account
                 var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, userAccount.UserId.ToString()),
+                        new Claim(ClaimTypes.Name, userAccount.FirstName + " " + userAccount.LastName),
                          new Claim(ClaimTypes.Email, userAccount.Email),
                         new Claim(ClaimTypes.Role, userAccount.Role.ToString())
                     };
@@ -65,9 +66,9 @@ namespace GymMaster_RazorPages.Pages.Account
                     ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
                 });
 
-            if (userAccount.Role == "Trainer") return RedirectToPage("/Dashboard/TrainerDasboard");
+                if (userAccount.Role == "Trainer") return RedirectToPage("/Dashboard/TrainerDasboard");
 
-                
+
 
                 return RedirectToPage("/Dashboard/MemberDashboard");
             }
