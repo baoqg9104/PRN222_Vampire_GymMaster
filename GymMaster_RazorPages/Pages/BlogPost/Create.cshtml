@@ -1,0 +1,69 @@
+﻿@page
+@model GymMaster_RazorPages.Pages.BlogPost.CreateModel
+
+@{
+    ViewData["Title"] = "Create New Blog Post";
+    var categories = new List<string> { "Nutrition", "Workout", "Lifestyle" };
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Create New Blog Post</h4>
+                        <a asp-page="Index" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="BlogPost.Title" class="form-label">Post Title</label>
+                            <input asp-for="BlogPost.Title" class="form-control" placeholder="Enter post title" />
+                            <span asp-validation-for="BlogPost.Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="BlogPost.Content" class="form-label">Content</label>
+                            <textarea asp-for="BlogPost.Content" class="form-control" rows="8"
+                                      placeholder="Write your post content here..."></textarea>
+                            <span asp-validation-for="BlogPost.Content" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="BlogPost.Category" class="form-label">Category</label>
+                            <select asp-for="BlogPost.Category" class="form-control">
+                                <option value="">-- Select Category --</option>
+                                @foreach (var category in categories)
+                                {
+                                    <option value="@category">@category</option>
+                                }
+                            </select>
+                            <span asp-validation-for="BlogPost.Category" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus-circle me-2"></i> Create Post
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
