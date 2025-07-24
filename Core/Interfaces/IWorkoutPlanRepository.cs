@@ -1,4 +1,5 @@
-﻿using MSSQLServer.EntitiesModels;
+﻿using Core.Response;
+using MSSQLServer.EntitiesModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Core.Interfaces
     public interface IWorkoutPlanRepository
     {
         Task<IEnumerable<WorkoutPlan>> GetAllAsync();
+        Task<WorkoutPlanResponse> GetListAsync(string? searchTypeName, float? assignment, int pageIndex, int pageSize);
         Task<WorkoutPlan?> GetByIdAsync(int id);
         Task<IEnumerable<WorkoutPlan>> GetByAssignmentIdAsync(int AssignmentId);
         Task<WorkoutPlan> AddAsync(WorkoutPlan workoutPlan);
