@@ -52,5 +52,24 @@ namespace Services.Services
                 return _userRepository.Login(email, password);
             }
 
+            public async Task<int> GetTotalUsersCountAsync()
+            {
+                return await _userRepository.GetTotalUsersCountAsync();
+            }
+
+            public async Task<int> GetTrainerCountAsync()
+            {
+                return await _userRepository.GetTrainerCountAsync();
+            }
+
+            public async Task<int> GetMemberCountAsync()
+            {
+                return await _userRepository.GetMemberCountAsync();
+            }
+
+            public async Task<int> GetNewUsersThisMonthAsync()
+            {
+                return await _userRepository.GetNewUsersThisMonthAsync();
+            }
         }
 }

@@ -17,4 +17,5 @@ public interface ITrainerAssignmentService
     Task<bool> DeleteAsync(int id);
     Task<User> GetCurrentTrainerAsync(int userId);
 
+
 }

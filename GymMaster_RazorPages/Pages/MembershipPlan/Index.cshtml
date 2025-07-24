@@ -1,0 +1,221 @@
+﻿@page
+@model GymMaster_RazorPages.Pages.MembershipPlan.IndexModel
+
+@{
+    ViewData["Title"] = "MembershipPlan Management";
+}
+
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    h1 {
+        color: #007bff;
+        font-weight: 500;
+    }
+
+    .table {
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+</style>
+
+<!-- Status Message -->
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
+        <i class="fas fa-info-circle me-2"></i> @Model.StatusMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Membership Plan Management</h1>
+    <a asp-page="Create" class="btn btn-primary">
+        <i class="fas fa-plus-circle me-2"></i>Create New
+    </a>
+</div>
+
+<!-- Statistics Summary -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title">Total Plans</h5>
+                <p class="h3 text-primary">@Model.TotalPlans</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title">Active Plans</h5>
+                <p class="h3 text-success">@Model.ActivePlans</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title">Average Price</h5>
+                <p class="h3 text-info">@Model.AveragePrice.ToString("C")</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search & Filter -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" name="SearchString" value="@Model.SearchString" class="form-control" placeholder="Search by name or description..." />
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="ActiveOnly" value="true" @(Model.ActiveOnly == true ? "checked" : "") id="activeOnly" onchange="this.form.submit()">
+                    <label class="form-check-label" for="activeOnly">
+                        Active plans only
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-3 text-end">
+                <a asp-page="./Index" class="btn btn-outline-secondary">Clear Filters</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Membership Plans Table -->
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort">
+                            @Html.DisplayNameFor(model => model.MembershipPlans[0].Name)
+                            <i class="fas fa-sort"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a asp-page="./Index" asp-route-sortOrder="@Model.DurationSort">
+                            @Html.DisplayNameFor(model => model.MembershipPlans[0].DurationDays)
+                            <i class="fas fa-sort"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a asp-page="./Index" asp-route-sortOrder="@Model.PriceSort">
+                            @Html.DisplayNameFor(model => model.MembershipPlans[0].Price)
+                            <i class="fas fa-sort"></i>
+                        </a>
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MembershipPlans[0].Description)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MembershipPlans[0].IsActive)
+                    </th>
+                    <th>
+                        <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort">
+                            @Html.DisplayNameFor(model => model.MembershipPlans[0].CreatedAt)
+                            <i class="fas fa-sort"></i>
+                        </a>
+                    </th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.MembershipPlans)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DurationDays)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @if (item.IsActive == true)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreatedAt)
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a asp-page="./Edit" asp-route-id="@item.PlanId" class="btn btn-outline-primary btn-sm">Edit</a>
+                                <a asp-page="./Details" asp-route-id="@item.PlanId" class="btn btn-outline-info btn-sm">Details</a>
+                                <a asp-page="./Delete" asp-route-id="@item.PlanId" class="btn btn-outline-danger btn-sm">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination -->
+@if (Model.PaginatedPlans.TotalPages > 1)
+{
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                @if (Model.PaginatedPlans.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-page="./Index" 
+                           asp-route-pageNumber="@(Model.PaginatedPlans.PageIndex - 1)"
+                           asp-route-searchString="@Model.SearchString"
+                           asp-route-sortOrder="@Model.SortOrder"
+                           asp-route-activeOnly="@Model.ActiveOnly">Previous</a>
+                    </li>
+                }
+                
+                @for (int i = 1; i <= Model.PaginatedPlans.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PaginatedPlans.PageIndex ? "active" : "")">
+                        <a class="page-link" asp-page="./Index" 
+                           asp-route-pageNumber="@i"
+                           asp-route-searchString="@Model.SearchString"
+                           asp-route-sortOrder="@Model.SortOrder"
+                           asp-route-activeOnly="@Model.ActiveOnly">@i</a>
+                    </li>
+                }
+                
+                @if (Model.PaginatedPlans.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-page="./Index" 
+                           asp-route-pageNumber="@(Model.PaginatedPlans.PageIndex + 1)"
+                           asp-route-searchString="@Model.SearchString"
+                           asp-route-sortOrder="@Model.SortOrder"
+                           asp-route-activeOnly="@Model.ActiveOnly">Next</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+}

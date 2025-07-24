@@ -16,5 +16,9 @@ namespace Services.Services
         Task<User> UpdateAsync(User user);
         Task<bool> DeleteAsync(int id);
         User Login(string email, string password);
+        Task<int> GetTotalUsersCountAsync();
+        Task<int> GetTrainerCountAsync();
+        Task<int> GetMemberCountAsync();
+        Task<int> GetNewUsersThisMonthAsync();
     }
 }

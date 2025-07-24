@@ -62,8 +62,11 @@ public class TrainerAssignmentRepository: ITrainerAssignmentRepository
     public async Task<TrainerAssignment?> GetByIdAsync(int id)
     {
         return await _context.TrainerAssignments
-           .Include(bm => bm.WorkoutPlans)
-           .FirstOrDefaultAsync(bm => bm.AssignmentId == id);
+           .Include(ta => ta.Trainer) // Include Trainer
+        .Include(ta => ta.Member)  // Include Member
+        .Include(ta => ta.Membership) // Include Membership
+        .Include(ta => ta.WorkoutPlans)
+        .FirstOrDefaultAsync(ta => ta.AssignmentId == id);
     }
 
     public async Task<IEnumerable<TrainerAssignment>> GetByTrainerIdAsync(int trainerId)

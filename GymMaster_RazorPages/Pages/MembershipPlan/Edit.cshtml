@@ -1,0 +1,99 @@
+﻿@page
+@model GymMaster_RazorPages.Pages.MembershipPlan.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    h1, h4 {
+        color: #007bff;
+        font-weight: 500;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+        border-radius: 0.5rem;
+        border: 1px solid #ced4da;
+        padding: 0.75rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .btn-primary {
+        border-radius: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        transition: background-color 0.3s;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+    .btn-outline-secondary {
+        border-radius: 0.5rem;
+        padding: 0.75rem 1.5rem;
+    }
+</style>
+
+<h1>Edit</h1>
+<h4>MembershipPlan</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MembershipPlan.PlanId" />
+            <div class="form-group">
+                <label asp-for="MembershipPlan.Name" class="control-label"></label>
+                <input asp-for="MembershipPlan.Name" class="form-control" />
+                <span asp-validation-for="MembershipPlan.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MembershipPlan.DurationDays" class="control-label"></label>
+                <input asp-for="MembershipPlan.DurationDays" class="form-control" />
+                <span asp-validation-for="MembershipPlan.DurationDays" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MembershipPlan.Price" class="control-label"></label>
+                <input asp-for="MembershipPlan.Price" class="form-control" />
+                <span asp-validation-for="MembershipPlan.Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MembershipPlan.Description" class="control-label"></label>
+                <input asp-for="MembershipPlan.Description" class="form-control" />
+                <span asp-validation-for="MembershipPlan.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MembershipPlan.IsActive" class="control-label"></label>
+                <input asp-for="MembershipPlan.IsActive" class="form-control" />
+                <span asp-validation-for="MembershipPlan.IsActive" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MembershipPlan.CreatedAt" class="control-label"></label>
+                <input asp-for="MembershipPlan.CreatedAt" class="form-control" />
+                <span asp-validation-for="MembershipPlan.CreatedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index" class="btn btn-outline-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}z

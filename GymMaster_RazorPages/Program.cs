@@ -12,7 +12,7 @@ builder.Services.AddRazorPages();
 
 //1.Configure conn db
 builder.Services.AddDbContext<GymManagementContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+       options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
 builder.Services.AddScoped<IBodyMeasurementRepository, BodyMeasurementRepository>();

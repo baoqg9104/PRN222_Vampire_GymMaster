@@ -15,4 +15,5 @@ public interface IBlogPostRepository
     Task<BlogPost> AddAsync(BlogPost blogPost);
     Task<BlogPost> UpdateAsync(BlogPost blogPost);
     Task<bool> DeleteAsync(int id);
+    Task<int> GetTotalBlogPostsCountAsync();
 }

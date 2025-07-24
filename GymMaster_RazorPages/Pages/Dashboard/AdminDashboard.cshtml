@@ -1,0 +1,178 @@
+﻿@page
+@model GymMaster_RazorPages.Pages.Dashboard.AdminDashboardModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container-fluid py-3">
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
+            <i class="fas fa-info-circle me-2"></i> @Model.StatusMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="card-title mb-0">
+                            <i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard
+                        </h1>
+                        <p class="card-text mt-2 mb-0">Welcome back, @User.Identity?.Name!</p>
+                    </div>
+                    <div class="text-end">
+                        <p class="mb-0">@DateTime.Now.ToString("dddd, MMMM d, yyyy")</p>
+                        <small>Last login: Today at @DateTime.Now.ToString("h:mm tt")</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3 mb-md-0">
+            <div class="card bg-light h-100">
+                <div class="card-body text-center">
+                    <div class="display-4 text-primary mb-2">@Model.TotalUsers</div>
+                    <h5 class="card-title">Total Users</h5>
+                    <p class="small text-muted mb-0">
+                        <span class="badge bg-success me-1">@Model.TrainerCount Trainers</span>
+                        <span class="badge bg-info">@Model.MemberCount Members</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <div class="card bg-light h-100">
+                <div class="card-body text-center">
+                    <div class="display-4 text-success mb-2">@Model.ActiveMemberships</div>
+                    <h5 class="card-title">Active Memberships</h5>
+                    <p class="small text-muted mb-0">
+                        <i class="fas fa-id-card me-1"></i> @Model.TotalMembershipPlans plans
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <div class="card bg-light h-100">
+                <div class="card-body text-center">
+                    <div class="display-4 text-info mb-2">@Model.TotalBlogPosts</div>
+                    <h5 class="card-title">Blog Posts</h5>
+                    <p class="small text-muted mb-0">
+                        <i class="fas fa-newspaper me-1"></i> Content engagement
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <div class="card bg-light h-100">
+                <div class="card-body text-center">
+                    <div class="display-4 text-warning mb-2">@Model.NewUsersThisMonth</div>
+                    <h5 class="card-title">New Users</h5>
+                    <p class="small text-muted mb-0">
+                        <i class="fas fa-user-plus me-1"></i> This month
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <a asp-page="/Account/Create" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-user-plus me-2"></i>New User
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a asp-page="/MembershipPlan/Create" class="btn btn-outline-success w-100">
+                                <i class="fas fa-plus-circle me-2"></i>New Membership Plan
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a asp-page="/BlogPost/Create" class="btn btn-outline-info w-100">
+                                <i class="fas fa-pen me-2"></i>New Blog Post
+                            </a>
+                        </div>
+                        </div>
+                    <h3 class="card-title">Membership Plans</h3>
+                    <p class="card-text">Create and manage membership plans for your gym members.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a asp-page="/MembershipPlan/Index" class="btn btn-success w-100">
+                        <i class="fas fa-cog me-2"></i>Manage Plans
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Management Cards -->
+    <div class="row g-4 mb-4">
+        <!-- Manage Users -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="display-4 mb-3 text-primary">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="card-title">Users</h3>
+                    <p class="card-text">Manage user accounts, including members, trainers, and administrators.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a asp-page="/Account/Index" class="btn btn-primary w-100 text-white">
+                        <i class="fas fa-cog me-2"></i>Manage Users
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Manage Blog Posts -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="display-4 mb-3 text-info">
+                        <i class="fas fa-blog"></i>
+                    </div>
+                    <h3 class="card-title">Blog Posts</h3>
+                    <p class="card-text">Manage blog posts to keep your members informed and engaged.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a asp-page="/BlogPost/Index" class="btn btn-info w-100 text-white">
+                        <i class="fas fa-cog me-2"></i>Manage Posts
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Manage Membership Plans -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="display-4 mb-3 text-success">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <h3 class="card-title">Membership Plans</h3>
+                    <p class="card-text">Create and manage membership plans for your gym members.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a asp-page="/MembershipPlan/Index" class="btn btn-success w-100 text-white">
+                        <i class="fas fa-cog me-2"></i>Manage Plans
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
