@@ -1,0 +1,91 @@
+﻿@page
+@model GymMaster_RazorPages.Pages.WorkoutPlans.EditModel
+
+@{
+    ViewData["Title"] = "✏️ Edit Workout Plan";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center text-primary mb-4">
+        <i class="bi bi-pencil-square"></i> Modify Your Plan
+    </h1>
+
+    <div class="card border-primary shadow-sm">
+        <div class="card-header bg-primary bg-opacity-10 fw-bold">
+            <i class="bi bi-tools"></i> Edit Details
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="WorkoutPlan.PlanId" />
+
+                <div class="mb-3">
+                    <label asp-for="WorkoutPlan.AssignmentId" class="form-label">
+                        <i class="bi bi-journal-text"></i> Assignment
+                    </label>
+                    <select asp-for="WorkoutPlan.AssignmentId" class="form-select" asp-items="Model.List"></select>
+                    <span asp-validation-for="WorkoutPlan.AssignmentId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="WorkoutPlan.DayOfWeek" class="form-label">
+                        <i class="bi bi-calendar-week"></i> Day of Week
+                    </label>
+                    <input asp-for="WorkoutPlan.DayOfWeek" class="form-control" />
+                    <span asp-validation-for="WorkoutPlan.DayOfWeek" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="WorkoutPlan.ExerciseName" class="form-label">
+                        <i class="bi bi-dumbbell"></i> Exercise
+                    </label>
+                    <input asp-for="WorkoutPlan.ExerciseName" class="form-control" />
+                    <span asp-validation-for="WorkoutPlan.ExerciseName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="WorkoutPlan.Sets" class="form-label">
+                        <i class="bi bi-repeat"></i> Sets
+                    </label>
+                    <input asp-for="WorkoutPlan.Sets" class="form-control" />
+                    <span asp-validation-for="WorkoutPlan.Sets" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="WorkoutPlan.Reps" class="form-label">
+                        <i class="bi bi-arrow-repeat"></i> Reps
+                    </label>
+                    <input asp-for="WorkoutPlan.Reps" class="form-control" />
+                    <span asp-validation-for="WorkoutPlan.Reps" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="WorkoutPlan.WeightDescription" class="form-label">
+                        <i class="bi bi-scales"></i> Weight
+                    </label>
+                    <input asp-for="WorkoutPlan.WeightDescription" class="form-control" />
+                    <span asp-validation-for="WorkoutPlan.WeightDescription" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="WorkoutPlan.Notes" class="form-label">
+                        <i class="bi bi-chat-left-text"></i> Notes
+                    </label>
+                    <input asp-for="WorkoutPlan.Notes" class="form-control" />
+                    <span asp-validation-for="WorkoutPlan.Notes" class="text-danger"></span>
+                </div>
+
+                <div class="text-end mt-4">
+                    <input type="submit" value="💾 Save Changes" class="btn btn-success rounded-pill me-2" />
+                    <a asp-page="./Index" class="btn btn-outline-secondary rounded-pill">
+                        <i class="bi bi-arrow-left-circle"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

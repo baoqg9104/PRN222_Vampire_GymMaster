@@ -1,0 +1,149 @@
+﻿@page
+@model GymMaster_RazorPages.Pages.WorkoutPlans.IndexModel
+
+@{
+    ViewData["Title"] = "🏋️ Workout Plans";
+}
+<div id="bubble-zone" class="bubble-zone position-relative overflow-hidden py-5">
+     <h1 class="text-center text-gradient mb-4 fw-bold">
+        <i class="bi bi-heart-fill text-danger"></i> 
+        <i class="bi bi-person-arms-up"></i> My Workout Plans 
+        <i class="bi bi-person-arms-up"></i> 
+        <i class="bi bi-heart-fill text-danger"></i>
+    </h1>
+</div>
+
+<div class="container mt-5">
+
+    <!-- Create New Button -->
+    <div class="d-flex justify-content-end mb-4">
+        <a class="btn btn-success btn-lg rounded-pill shadow-sm" asp-page="Create">
+            <i class="bi bi-plus-circle"></i> Create New Plan
+        </a>
+    </div>
+
+    <!-- Search Form in a Card -->
+    <div class="card border-info mb-5 shadow-sm">
+        <div class="card-body bg-light">
+            <form class="row g-3" method="get">
+                <div class="col-md-5">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="searchTerm" name="searchTerm" placeholder="Search exercise..." />
+                        <label for="searchTerm"><i class="bi bi-search"></i> Exercise Name</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="assignmentId" name="assignmentId" placeholder="Assignment ID" />
+                        <label for="assignmentId"><i class="bi bi-journal-text"></i> Assignment ID</label>
+                    </div>
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-info w-100 rounded-pill shadow-sm fw-bold">
+                        <i class="bi bi-search-heart"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Workout Plans Table -->
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-info text-center">
+                <tr>
+                    <th><i class="bi bi-calendar-week"></i> Day</th>
+                    <th><i class="bi bi-dumbbell"></i> Exercise</th>
+                    <th><i class="bi bi-repeat"></i> Sets</th>
+                    <th><i class="bi bi-arrow-repeat"></i> Reps</th>
+                    <th><i class="bi bi-scales"></i> Weight</th>
+                    <th><i class="bi bi-pencil-square"></i> Notes</th>
+                    <th><i class="bi bi-hash"></i> Assignment</th>
+                    <th><i class="bi bi-gear"></i> Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.WorkoutPlan)
+                {
+                    <tr>
+                        <td class="text-center">@Html.DisplayFor(modelItem => item.DayOfWeek)</td>
+                        <td>@Html.DisplayFor(modelItem => item.ExerciseName)</td>
+                        <td class="text-center">@Html.DisplayFor(modelItem => item.Sets)</td>
+                        <td class="text-center">@Html.DisplayFor(modelItem => item.Reps)</td>
+                        <td>@Html.DisplayFor(modelItem => item.WeightDescription)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Notes)</td>
+                        <td class="text-center">@Html.DisplayFor(modelItem => item.Assignment.AssignmentId)</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a class="btn btn-outline-primary rounded-pill" asp-page="./Edit" asp-route-id="@item.PlanId">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a class="btn btn-outline-success rounded-pill" asp-page="./Details" asp-route-id="@item.PlanId">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a class="btn btn-outline-danger rounded-pill" asp-page="./Delete" asp-route-id="@item.PlanId">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="mt-5">
+            <ul class="pagination pagination-lg justify-content-center">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link rounded-pill fw-semibold shadow-sm text-primary-emphasis" asp-page="./Index" asp-route-pageIndex="@i">
+                            @(i == Model.PageIndex ? "💫 " + i : "🌼 " + i)
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+
+</div>
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  const zone = document.getElementById("bubble-zone");
+  if (!zone) return;
+
+  const pastelColors = [
+    'rgba(255, 182, 193, 0.6)', // Pink
+    'rgba(173, 216, 230, 0.6)', // Light Blue
+    'rgba(255, 255, 153, 0.6)', // Yellow
+    'rgba(204, 255, 204, 0.6)', // Mint
+    'rgba(221, 160, 221, 0.6)', // Lavender
+    'rgba(255, 213, 128, 0.6)', // Peach
+    'rgba(192, 236, 243, 0.6)'  // Sky
+  ];
+
+  setInterval(() => {
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.style.width = `${Math.random() * 40 + 20}px`;
+    bubble.style.height = bubble.style.width;
+    bubble.style.left = `${Math.random() * zone.offsetWidth}px`;
+    bubble.style.animationDuration = `${Math.random() * 4 + 4}s`;
+    bubble.style.position = "absolute";
+    bubble.style.bottom = "-100px";
+    
+    // 🌈 Assign random pastel color
+    const color = pastelColors[Math.floor(Math.random() * pastelColors.length)];
+    bubble.style.backgroundColor = color;
+
+    zone.appendChild(bubble);
+    setTimeout(() => bubble.remove(), 6000);
+  }, 500);
+});
+</script>
+

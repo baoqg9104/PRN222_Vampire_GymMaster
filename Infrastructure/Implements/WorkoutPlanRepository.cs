@@ -1,4 +1,5 @@
 ﻿using Core.Interfaces;
+using Core.Response;
 using Microsoft.EntityFrameworkCore;
 using MSSQLServer.EntitiesModels;
 using System;
@@ -41,8 +42,40 @@ namespace Infrastructure.Implements
         public async Task<IEnumerable<WorkoutPlan>> GetAllAsync()
         {
             return await _context.WorkoutPlans
-                .Include(bm => bm.WorkoutSessions)
+                .Include(bm => bm.Assignment)
                 .ToListAsync();
+        }
+
+
+        public async Task<WorkoutPlanResponse> GetListAsync(string? searchTypeName, float? assignment, int pageIndex, int pageSize)
+        {
+            var query = _context.WorkoutPlans.Include(p => p.Assignment).AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTypeName))
+            {
+                query = query.Where(p => p.ExerciseName.Contains(searchTypeName));
+            }
+
+            if (assignment.HasValue)
+            {
+                query = query.Where(p => p.AssignmentId == assignment.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            var plan = await query
+                .OrderByDescending(p => p.PlanId) // Optional: sort mới nhất lên đầu
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new WorkoutPlanResponse
+            {
+                WorkoutPlan = plan,
+                TotalPages = totalPages,
+                PageIndex = pageIndex
+            };
         }
 
         public async Task<IEnumerable<WorkoutPlan>> GetByAssignmentIdAsync(int AssignmentId)
@@ -56,17 +89,13 @@ namespace Infrastructure.Implements
         public async Task<WorkoutPlan?> GetByIdAsync(int id)
         {
             return await _context.WorkoutPlans
-                .Include(bm => bm.WorkoutSessions)
+                .Include(bm => bm.Assignment)
                .FirstOrDefaultAsync(bm => bm.PlanId == id);
         }
 
         public async Task<WorkoutPlan> UpdateAsync(WorkoutPlan workoutPlan)
         {
-            if (workoutPlan == null)
-            {
-                throw new ArgumentNullException(nameof(workoutPlan), "Workout Plan cannot be null");
-            }
-            _context.WorkoutPlans.Update(workoutPlan);
+            _context.Entry(workoutPlan).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return workoutPlan;
         }
