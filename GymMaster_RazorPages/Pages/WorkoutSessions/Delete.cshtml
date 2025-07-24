@@ -1,0 +1,60 @@
+﻿@page
+@model GymMaster_RazorPages.Pages.WorkoutSessions.DeleteModel
+
+@{
+    ViewData["Title"] = "🗑️ Delete Workout Session";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center text-danger mb-3">
+        <i class="bi bi-trash-fill"></i> Confirm Session Deletion
+    </h1>
+    
+    <div class="alert alert-warning text-center fw-semibold">
+        <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+        Are you sure you want to delete this workout session?
+    </div>
+
+    <div class="card border-danger shadow-sm mb-4">
+        <div class="card-header bg-danger bg-opacity-10 fw-bold">
+            <i class="bi bi-clipboard2-data"></i> Session Details
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3"><i class="bi bi-clock-history"></i> Completed At</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.WorkoutSession.CompletedAt)</dd>
+
+                <dt class="col-sm-3"><i class="bi bi-repeat"></i> Actual Sets</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.WorkoutSession.ActualSets)</dd>
+
+                <dt class="col-sm-3"><i class="bi bi-arrow-repeat"></i> Actual Reps</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.WorkoutSession.ActualReps)</dd>
+
+                <dt class="col-sm-3"><i class="bi bi-scales"></i> Actual Weight</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.WorkoutSession.ActualWeight)</dd>
+
+                <dt class="col-sm-3"><i class="bi bi-chat-left-text"></i> Notes</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.WorkoutSession.Notes)</dd>
+
+                <dt class="col-sm-3"><i class="bi bi-star-fill"></i> Rating</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.WorkoutSession.Rating)</dd>
+
+                <dt class="col-sm-3"><i class="bi bi-envelope"></i> Member Email</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.WorkoutSession.Member.Email)</dd>
+
+                <dt class="col-sm-3"><i class="bi bi-dumbbell"></i> Exercise</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.WorkoutSession.Plan.ExerciseName)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <form method="post" class="text-end">
+        <input type="hidden" asp-for="WorkoutSession.SessionId" />
+        <button type="submit" class="btn btn-danger rounded-pill fw-bold shadow-sm">
+            <i class="bi bi-trash"></i> Delete
+        </button>
+        <a asp-page="./Index" class="btn btn-outline-secondary ms-2 rounded-pill shadow-sm">
+            <i class="bi bi-arrow-left-circle"></i> Back to List
+        </a>
+    </form>
+</div>

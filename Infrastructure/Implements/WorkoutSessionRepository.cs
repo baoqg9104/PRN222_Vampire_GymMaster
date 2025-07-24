@@ -1,4 +1,5 @@
 ﻿using Core.Interfaces;
+using Core.Response;
 using Microsoft.EntityFrameworkCore;
 using MSSQLServer.EntitiesModels;
 using System;
@@ -46,6 +47,8 @@ namespace Infrastructure.Implements
         public async Task<WorkoutSession?> GetByIdAsync(int id)
         {
             return await _context.WorkoutSessions
+                .Include(bm => bm.Plan)
+                .Include(bm => bm.Member)
                 .FirstOrDefaultAsync(bm => bm.SessionId == id);
         }
 
@@ -73,6 +76,37 @@ namespace Infrastructure.Implements
                 .Where(bm => bm.MemberId == userId)
                 .Include(bm => bm.Member)
                 .ToListAsync();
+        }
+
+        public async Task<WorkoutSessionResponse> GetListAsync(string? searchTypeName, int? id, int pageIndex, int pageSize)
+        {
+            var query = _context.WorkoutSessions.Include(p => p.Plan).Include(p => p.Member).AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTypeName))
+            {
+                query = query.Where(p => p.Plan.ExerciseName.Contains(searchTypeName));
+            }
+
+            if (id.HasValue)
+            {
+                query = query.Where(p => p.MemberId == id.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            var session = await query
+                .OrderByDescending(p => p.SessionId) // Optional: sort mới nhất lên đầu
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new WorkoutSessionResponse
+            {
+                WorkoutSession = session,
+                TotalPages = totalPages,
+                PageIndex = pageIndex
+            };
         }
     }
 }
