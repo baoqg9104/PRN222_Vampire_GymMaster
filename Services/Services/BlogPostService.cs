@@ -46,4 +46,9 @@ public class BlogPostService : IBlogPostService
     {
         return await _blogPostRepository.UpdateAsync(blogPost);
     }
+
+    public async Task<int> GetTotalBlogPostsCountAsync()
+    {
+        return await _blogPostRepository.GetTotalBlogPostsCountAsync();
+    }
 }

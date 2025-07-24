@@ -15,4 +15,6 @@ public interface IMembershipPlanRepository
     Task<MembershipPlan> AddAsync(MembershipPlan membershipPlan);
     Task<MembershipPlan> UpdateAsync(MembershipPlan membershipPlan);
     Task<bool> DeleteAsync(int id);
+    Task<int> GetActiveMembershipsCountAsync();
+    Task<int> GetTotalMembershipPlansCountAsync();
 }

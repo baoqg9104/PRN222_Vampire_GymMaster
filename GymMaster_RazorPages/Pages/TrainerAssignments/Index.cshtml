@@ -1,0 +1,112 @@
+﻿@page
+@model GymMaster_RazorPages.Pages.TrainerAssignments.IndexModel
+
+@{
+    ViewData["Title"] = "Trainer Assignments";
+}
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    h1 {
+        color: #007bff;
+        font-weight: 500;
+    }
+
+    .table {
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+</style>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="fw-bold text-primary">
+            <i class="bi bi-person-badge"></i> Trainer Assignments
+        </h1>
+        <a asp-page="Create" class="btn btn-success rounded-pill shadow-sm">
+            <i class="bi bi-plus-circle"></i> Create New
+        </a>
+    </div>
+
+    <!-- Search Bar -->
+    <form method="get" class="mb-4">
+        <div class="input-group input-group-lg shadow-sm">
+            <input type="text" name="SearchTerm" value="@Model.SearchTerm" class="form-control" placeholder="Search by member, trainer, goals, or membership ID..." />
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i> Search
+            </button>
+            @if (!string.IsNullOrWhiteSpace(Model.SearchTerm))
+            {
+                <a asp-page="./Index" class="btn btn-outline-secondary">Clear</a>
+            }
+        </div>
+    </form>
+
+    <div class="table-responsive shadow rounded">
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-primary text-center">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.TrainerAssignment[0].StartDate)</th>
+                    <th>@Html.DisplayNameFor(model => model.TrainerAssignment[0].EndDate)</th>
+                    <th>@Html.DisplayNameFor(model => model.TrainerAssignment[0].Goals)</th>
+                    <th>@Html.DisplayNameFor(model => model.TrainerAssignment[0].IsActive)</th>
+                    <th>@Html.DisplayNameFor(model => model.TrainerAssignment[0].Member)</th>
+                    <th>@Html.DisplayNameFor(model => model.TrainerAssignment[0].Membership)</th>
+                    <th>@Html.DisplayNameFor(model => model.TrainerAssignment[0].Trainer)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @if (Model.TrainerAssignment.Count == 0)
+            {
+                <tr>
+                    <td colspan="8" class="text-center text-muted py-4">
+                        <i class="bi bi-emoji-frown fs-2"></i><br />
+                        No assignments found.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                foreach (var item in Model.TrainerAssignment)
+                {
+                    <tr>
+                        <td class="text-center">@Html.DisplayFor(modelItem => item.StartDate)</td>
+                        <td class="text-center">@Html.DisplayFor(modelItem => item.EndDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Goals)</td>
+                        <td class="text-center">
+                            @if (item.IsActive == true)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.Member.Email)</td>
+                        <td class="text-center">@Html.DisplayFor(modelItem => item.Membership.MembershipId)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Trainer.Email)</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a class="btn btn-outline-primary rounded-pill" asp-page="./Edit" asp-route-id="@item.AssignmentId">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a class="btn btn-outline-info rounded-pill" asp-page="./Details" asp-route-id="@item.AssignmentId">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a class="btn btn-outline-danger rounded-pill" asp-page="./Delete" asp-route-id="@item.AssignmentId">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

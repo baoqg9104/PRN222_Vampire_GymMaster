@@ -73,4 +73,9 @@ public class BlogPostRepository : IBlogPostRepository
         await _context.SaveChangesAsync();
         return blogPost;
     }
+
+    public async Task<int> GetTotalBlogPostsCountAsync()
+    {
+        return await _context.BlogPosts.CountAsync();
+    }
 }

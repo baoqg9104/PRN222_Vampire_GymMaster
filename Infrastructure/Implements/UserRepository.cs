@@ -79,5 +79,31 @@ namespace Infrastructure.Implements
             var lionAccount = _context.Users.FirstOrDefault(x => x.Email == email && x.PasswordHash == password);
             return lionAccount;
         }
+
+        public async Task<int> GetTotalUsersCountAsync()
+        {
+            return await _context.Users.CountAsync();
+        }
+
+        public async Task<int> GetTrainerCountAsync()
+        {
+            return await _context.Users
+                .CountAsync(u => u.Role == "Trainer");
+        }
+
+        public async Task<int> GetMemberCountAsync()
+        {
+            return await _context.Users
+                .CountAsync(u => u.Role == "Member");
+        }
+
+        public async Task<int> GetNewUsersThisMonthAsync()
+        {
+            var now = DateTime.Now;
+            var firstDayOfMonth = new DateOnly(now.Year, now.Month, 1);
+            
+            return await _context.Users
+                .CountAsync(u => u.CreatedAt >= firstDayOfMonth.ToDateTime(TimeOnly.MinValue));
+        }
     }
 }

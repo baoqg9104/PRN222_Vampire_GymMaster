@@ -70,4 +70,19 @@ public class MembershipPlanRepository : IMembershipPlanRepository
         await _context.SaveChangesAsync();
         return membershipPlan;
     }
+
+    // Implementation in MembershipPlanRepository
+    public async Task<int> GetActiveMembershipsCountAsync()
+    {
+        var now = DateTime.Now;
+
+        return await _context.MembershipPlans
+            .CountAsync(p => p.IsActive == true);
+    }
+
+    public async Task<int> GetTotalMembershipPlansCountAsync()
+    {
+        return await _context.MembershipPlans
+            .CountAsync(p => p.IsActive == true);
+    }
 }

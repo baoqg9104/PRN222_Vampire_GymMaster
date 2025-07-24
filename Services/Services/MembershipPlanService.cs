@@ -41,4 +41,15 @@ public class MembershipPlanService : IMembershipPlanService
     {
         return await _membershipPlanService.UpdateAsync(membershipPlan);
     }
+
+    // Implementation in MembershipPlanService
+    public async Task<int> GetActiveMembershipsCountAsync()
+    {
+        return await _membershipPlanService.GetActiveMembershipsCountAsync();
+    }
+
+    public async Task<int> GetTotalMembershipPlansCountAsync()
+    {
+        return await _membershipPlanService.GetTotalMembershipPlansCountAsync();
+    }
 }
