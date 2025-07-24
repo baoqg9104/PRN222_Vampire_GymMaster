@@ -1,4 +1,5 @@
 ﻿using Core.Interfaces;
+using Core.Response;
 using MSSQLServer.EntitiesModels;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,11 @@ namespace Services.Services
         public async Task<IEnumerable<WorkoutSession>> GetByUserIdAsync(int userId)
         {
             return await _workoutSessionService.GetByUserIdAsync(userId);
+        }
+
+        public async Task<WorkoutSessionResponse> GetListAsync(string? searchTypeName, int? id, int pageIndex, int pageSize)
+        {
+            return await _workoutSessionService.GetListAsync(searchTypeName, id, pageIndex, pageSize);
         }
     }
 }

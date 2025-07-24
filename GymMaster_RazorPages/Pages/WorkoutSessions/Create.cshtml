@@ -1,0 +1,95 @@
+﻿@page
+@model GymMaster_RazorPages.Pages.WorkoutSessions.CreateModel
+
+@{
+    ViewData["Title"] = "🎯 Create Workout Session";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center text-primary mb-4">
+        <i class="bi bi-person-walking"></i> Create New Session
+    </h1>
+
+    <div class="card shadow-sm border-warning">
+        <div class="card-body bg-light">
+            <h4 class="text-warning fw-bold mb-3">
+                <i class="bi bi-pencil-square"></i> Fill in Session Details
+            </h4>
+
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="WorkoutSession.MemberId" class="form-label">
+                        <i class="bi bi-person-fill"></i> Member
+                    </label>
+                    <select asp-for="WorkoutSession.MemberId" class="form-select" asp-items="Model.MemberList"></select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="WorkoutSession.PlanId" class="form-label">
+                        <i class="bi bi-journal-text"></i> Plan
+                    </label>
+                    <select asp-for="WorkoutSession.PlanId" class="form-select" asp-items="Model.PlanList"></select>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="WorkoutSession.ActualSets" class="form-label">
+                            <i class="bi bi-repeat"></i> Actual Sets
+                        </label>
+                        <input asp-for="WorkoutSession.ActualSets" class="form-control" />
+                        <span asp-validation-for="WorkoutSession.ActualSets" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="WorkoutSession.ActualReps" class="form-label">
+                            <i class="bi bi-arrow-repeat"></i> Actual Reps
+                        </label>
+                        <input asp-for="WorkoutSession.ActualReps" class="form-control" />
+                        <span asp-validation-for="WorkoutSession.ActualReps" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-3">
+                    <div class="col-md-6">
+                        <label asp-for="WorkoutSession.ActualWeight" class="form-label">
+                            <i class="bi bi-scales"></i> Actual Weight
+                        </label>
+                        <input asp-for="WorkoutSession.ActualWeight" class="form-control" />
+                        <span asp-validation-for="WorkoutSession.ActualWeight" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="WorkoutSession.Rating" class="form-label">
+                            <i class="bi bi-star-half"></i> Rating
+                        </label>
+                        <input asp-for="WorkoutSession.Rating" class="form-control" />
+                        <span asp-validation-for="WorkoutSession.Rating" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label asp-for="WorkoutSession.Notes" class="form-label">
+                        <i class="bi bi-chat-left-text"></i> Notes
+                    </label>
+                    <input asp-for="WorkoutSession.Notes" class="form-control" />
+                    <span asp-validation-for="WorkoutSession.Notes" class="text-danger"></span>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn btn-warning rounded-pill shadow-sm fw-semibold">
+                        <i class="bi bi-check2-circle"></i> Create Session
+                    </button>
+                    <a asp-page="Index" class="btn btn-outline-secondary ms-2 rounded-pill shadow-sm">
+                        <i class="bi bi-arrow-left-circle"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
