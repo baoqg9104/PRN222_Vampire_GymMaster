@@ -5,97 +5,222 @@
     ViewData["Title"] = "Edit Trainer Assignment";
 }
 
-<div class="container mt-5">
-    <h1 class="text-center text-primary mb-4">
-        <i class="bi bi-pencil-square"></i> Edit Trainer Assignment
-    </h1>
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f8f9fa;
+    }
 
-    <div class="card border-primary shadow-sm">
-        <div class="card-header bg-primary bg-opacity-10 fw-bold">
-            <i class="bi bi-tools"></i> Assignment Details
-        </div>
-        <div class="card-body">
-            <form method="post">
-                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-                <input type="hidden" asp-for="TrainerAssignment.AssignmentId" />
+    .page-header {
+        background: linear-gradient(135deg, #28a745, #20a139);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0.5rem;
+    }
 
-                <div class="mb-3">
-                    <label asp-for="TrainerAssignment.MemberId" class="form-label">
-                        <i class="bi bi-person"></i> Member
-                    </label>
-                    <select asp-for="TrainerAssignment.MemberId" class="form-select"
-                        asp-items="ViewBag.MemberId"></select>
-                    <span asp-validation-for="TrainerAssignment.MemberId" class="text-danger"></span>
-                </div>
+        .page-header h1 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
 
-                <div class="mb-3">
-                    <label asp-for="TrainerAssignment.TrainerId" class="form-label">
-                        <i class="bi bi-person-badge"></i> Trainer
-                    </label>
-                    <select asp-for="TrainerAssignment.TrainerId" class="form-select"
-                        asp-items="ViewBag.TrainerId"></select>
-                    <span asp-validation-for="TrainerAssignment.TrainerId" class="text-danger"></span>
-                </div>
+        .page-header p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0;
+        }
 
-                <div class="mb-3">
-                    <label asp-for="TrainerAssignment.MembershipId" class="form-label">
-                        <i class="bi bi-card-checklist"></i> Membership
-                    </label>
-                    <select asp-for="TrainerAssignment.MembershipId" class="form-select"
-                        asp-items="ViewBag.MembershipId"></select>
-                    <span asp-validation-for="TrainerAssignment.MembershipId" class="text-danger"></span>
-                </div>
+    .form-container {
+        background: white;
+        padding: 2rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-                <div class="mb-3">
-                    <label asp-for="TrainerAssignment.StartDate" class="form-label">
-                        <i class="bi bi-calendar-date"></i> Start Date
-                    </label>
-                    <input asp-for="TrainerAssignment.StartDate" class="form-control" type="date" />
-                    <span asp-validation-for="TrainerAssignment.StartDate" class="text-danger"></span>
-                </div>
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
 
-                <div class="mb-3">
-                    <label asp-for="TrainerAssignment.EndDate" class="form-label">
-                        <i class="bi bi-calendar2-date"></i> End Date
-                    </label>
-                    <input asp-for="TrainerAssignment.EndDate" class="form-control" type="date" />
-                    <span asp-validation-for="TrainerAssignment.EndDate" class="text-danger"></span>
-                </div>
+    .form-label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
 
-                <div class="mb-3">
-                    <label asp-for="TrainerAssignment.Goals" class="form-label">
-                        <i class="bi bi-bullseye"></i> Goals
-                    </label>
-                    <input asp-for="TrainerAssignment.Goals" class="form-control" />
-                    <span asp-validation-for="TrainerAssignment.Goals" class="text-danger"></span>
-                </div>
+    .form-control, .form-select {
+        border-radius: 0.5rem;
+        border: 2px solid #e9ecef;
+        padding: 0.75rem;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
 
-                <div class="mb-3">
-                    <label asp-for="TrainerAssignment.IsActive" class="form-label">
-                        <i class="bi bi-toggle-on"></i> Active
-                    </label>
-                    <select asp-for="TrainerAssignment.IsActive" class="form-select">
-                        <option value="">-- Select Status --</option>
-                        <option value="true"
-                            selected="@((Model.TrainerAssignment.IsActive ?? false) ? "selected" : null)">Active</option>
-                        <option value="false"
-                            selected="@((Model.TrainerAssignment.IsActive == false) ? "selected" : null)">Inactive
-                        </option>
-                    </select>
-                    <span asp-validation-for="TrainerAssignment.IsActive" class="text-danger"></span>
-                </div>
+        .form-control:focus, .form-select:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+            outline: 0;
+        }
 
-                <div class="text-end mt-4">
-                    <input type="submit" value="💾 Save Changes" class="btn btn-success rounded-pill me-2" />
-                    <a asp-page="./Index" class="btn btn-outline-secondary rounded-pill">
-                        <i class="bi bi-arrow-left-circle"></i> Back to List
-                    </a>
-                </div>
-            </form>
+    .btn-success {
+        background: linear-gradient(45deg, #28a745, #20a139);
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.75rem 2rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+        .btn-success:hover {
+            background: linear-gradient(45deg, #20a139, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        }
+
+    .btn-outline-secondary {
+        border-radius: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+        .btn-outline-secondary:hover {
+            transform: translateY(-1px);
+        }
+
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 0.375rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    
+</style>
+
+<div class="page-header text-center">
+    <div class="container">
+        <h1><i class="fas fa-edit"></i> Edit Trainer Assignment</h1>
+        <p>Update assignment details and manage trainer-member relationships</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="form-container">
+                <form method="post">
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+                    <!-- Hidden field for AssignmentId -->
+                    <input type="hidden" asp-for="AssignmentId" />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="MemberId" class="form-label">
+                                    <i class="fas fa-user"></i> Member
+                                </label>
+                                <select asp-for="MemberId" class="form-control form-select" asp-items="ViewBag.MemberId">
+                                    <option value="">-- Select a Member --</option>
+                                </select>
+                                <span asp-validation-for="MemberId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="TrainerId" class="form-label">
+                                    <i class="fas fa-dumbbell"></i> Trainer
+                                </label>
+                                <select asp-for="TrainerId" class="form-control form-select" asp-items="ViewBag.TrainerId">
+                                    <option value="">-- Select a Trainer --</option>
+                                </select>
+                                <span asp-validation-for="TrainerId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="MembershipId" class="form-label">
+                            <i class="fas fa-id-card"></i> Membership
+                        </label>
+                        <select asp-for="MembershipId" class="form-control form-select" asp-items="ViewBag.MembershipId">
+                            <option value="">-- Select a Membership --</option>
+                        </select>
+                        <span asp-validation-for="MembershipId" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="StartDate" class="form-label">
+                                    <i class="fas fa-calendar-plus"></i> Start Date
+                                </label>
+                                <input asp-for="StartDate" class="form-control" type="date" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="EndDate" class="form-label">
+                                    <i class="fas fa-calendar-minus"></i> End Date (Optional)
+                                </label>
+                                <input asp-for="EndDate" class="form-control" type="date" />
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                                <small class="form-text text-muted">Leave empty for ongoing assignment</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Goals" class="form-label">
+                            <i class="fas fa-target"></i> Goals (Optional)
+                        </label>
+                        <textarea asp-for="Goals" class="form-control" rows="3"
+                                  placeholder="Enter fitness goals and objectives for this assignment..."></textarea>
+                        <span asp-validation-for="Goals" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="IsActive" class="form-label">
+                            <i class="fas fa-toggle-on"></i> Status
+                        </label>
+                        <select asp-for="IsActive" class="form-control form-select">
+                            <option value="">-- Select Status --</option>
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                        <span asp-validation-for="IsActive" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-success me-2">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <a asp-page="./Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />

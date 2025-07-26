@@ -26,8 +26,33 @@ namespace GymMaster_RazorPages.Pages.TrainerAssignments
             _membershipService = membershipService;
         }
 
-        [BindProperty]
+        // Don't bind the complex object directly
         public TrainerAssignment TrainerAssignment { get; set; } = default!;
+
+        // Bind individual properties instead
+        [BindProperty]
+        public int AssignmentId { get; set; }
+
+        [BindProperty]
+        public int MemberId { get; set; }
+
+        [BindProperty]
+        public int TrainerId { get; set; }
+
+        [BindProperty]
+        public int MembershipId { get; set; }
+
+        [BindProperty]
+        public DateOnly StartDate { get; set; }
+
+        [BindProperty]
+        public DateOnly? EndDate { get; set; }
+
+        [BindProperty]
+        public string? Goals { get; set; }
+
+        [BindProperty]
+        public bool? IsActive { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -41,46 +66,91 @@ namespace GymMaster_RazorPages.Pages.TrainerAssignments
             {
                 return NotFound();
             }
+
+            // Populate both the object for display and individual properties
             TrainerAssignment = trainerAssignment;
 
-            // Populate dropdowns using services
-            var members = await _userService.GetAllAsync();
-            var trainers = await _userService.GetAllAsync();
-            var memberships = await _membershipService.GetAllAsync();
+            // Set individual properties from the loaded object
+            AssignmentId = trainerAssignment.AssignmentId;
+            MemberId = trainerAssignment.MemberId;
+            TrainerId = trainerAssignment.TrainerId;
+            MembershipId = trainerAssignment.MembershipId;
+            StartDate = trainerAssignment.StartDate;
+            EndDate = trainerAssignment.EndDate;
+            Goals = trainerAssignment.Goals;
+            IsActive = trainerAssignment.IsActive;
 
-            ViewData["MemberId"] = new SelectList(members, "UserId", "Email", TrainerAssignment.MemberId);
-            ViewData["TrainerId"] = new SelectList(trainers, "UserId", "Email", TrainerAssignment.TrainerId);
-            ViewData["MembershipId"] = new SelectList(memberships, "MembershipId", "MembershipId", TrainerAssignment.MembershipId);
-
+            await LoadSelectListsAsync();
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            // Debug: Check if values are being received
+            System.Diagnostics.Debug.WriteLine($"AssignmentId: {AssignmentId}");
+            System.Diagnostics.Debug.WriteLine($"MemberId: {MemberId}");
+            System.Diagnostics.Debug.WriteLine($"TrainerId: {TrainerId}");
+            System.Diagnostics.Debug.WriteLine($"MembershipId: {MembershipId}");
+
+            // Manual validation
+            if (MemberId == 0 || TrainerId == 0 || MembershipId == 0)
             {
-                // Repopulate dropdowns if validation fails
-                var members = await _userService.GetAllAsync();
-                var trainers = await _userService.GetAllAsync();
-                var memberships = await _membershipService.GetAllAsync();
+                if (MemberId == 0)
+                    ModelState.AddModelError(nameof(MemberId), "The Member field is required.");
 
-                ViewData["MemberId"] = new SelectList(members, "UserId", "Email", TrainerAssignment.MemberId);
-                ViewData["TrainerId"] = new SelectList(trainers, "UserId", "Email", TrainerAssignment.TrainerId);
-                ViewData["MembershipId"] = new SelectList(memberships, "MembershipId", "MembershipId", TrainerAssignment.MembershipId);
+                if (TrainerId == 0)
+                    ModelState.AddModelError(nameof(TrainerId), "The Trainer field is required.");
 
+                if (MembershipId == 0)
+                    ModelState.AddModelError(nameof(MembershipId), "The Membership field is required.");
+
+                // Reload the original assignment for display
+                TrainerAssignment = await _trainerAssignmentService.GetByIdAsync(AssignmentId);
+                await LoadSelectListsAsync();
                 return Page();
             }
 
+            // Create updated TrainerAssignment object
+            var updatedAssignment = new TrainerAssignment
+            {
+                AssignmentId = this.AssignmentId,
+                MemberId = this.MemberId,
+                TrainerId = this.TrainerId,
+                MembershipId = this.MembershipId,
+                StartDate = this.StartDate,
+                EndDate = this.EndDate,
+                Goals = this.Goals,
+                IsActive = this.IsActive
+            };
+
             try
             {
-                await _trainerAssignmentService.UpdateAsync(TrainerAssignment);
+                await _trainerAssignmentService.UpdateAsync(updatedAssignment);
+                return RedirectToPage("./Index");
             }
-            catch
+            catch (Exception ex)
             {
-                return NotFound();
-            }
+                ModelState.AddModelError("", "An error occurred while updating the trainer assignment: " + ex.Message);
 
-            return RedirectToPage("./Index");
+                // Reload the original assignment for display
+                TrainerAssignment = await _trainerAssignmentService.GetByIdAsync(AssignmentId);
+                await LoadSelectListsAsync();
+                return Page();
+            }
+        }
+
+        private async Task LoadSelectListsAsync()
+        {
+            var users = await _userService.GetAllAsync();
+            var memberships = await _membershipService.GetAllAsync();
+
+            // Filter users by role
+            var members = users.Where(u => u.Role == "Member").ToList();
+            var trainers = users.Where(u => u.Role == "Trainer").ToList();
+
+            ViewData["MemberId"] = new SelectList(members, "UserId", "Email", this.MemberId);
+            ViewData["TrainerId"] = new SelectList(trainers, "UserId", "Email", this.TrainerId);
+            ViewData["MembershipId"] = new SelectList(memberships, "MembershipId", "MembershipId", this.MembershipId);
         }
     }
 }
