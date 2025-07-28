@@ -3,164 +3,157 @@
 @model GymMaster_RazorPages.Pages.BlogPost.IndexModel
 
 @{
-    ViewData["Title"] = "Blog Posts";
-    var isTrainer = User.IsInRole("Trainer");
-    var userName = User.FindFirstValue(ClaimTypes.Name) ?? "Guest";
-    var userRole = User.FindFirstValue(ClaimTypes.Role) ?? "Guest";
-    var userEmail = User.FindFirstValue(ClaimTypes.Email);
-    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    var showOnlyMine = HttpContext.Request.Query["filter"] == "mine";
+	ViewData["Title"] = "Blog Posts";
+	var isTrainer = User.IsInRole("Trainer");
+	var userName = User.FindFirstValue(ClaimTypes.Name) ?? "Guest";
+	var userRole = User.FindFirstValue(ClaimTypes.Role) ?? "Guest";
+	var userEmail = User.FindFirstValue(ClaimTypes.Email);
+	var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+	var showOnlyMine = HttpContext.Request.Query["filter"] == "mine";
 }
 
 <div class="container">
-    <!-- User Info Section -->
-    <div class="user-info-card mb-4 p-3 bg-light rounded shadow-sm d-flex justify-content-between align-items-center">
-        <div>
-            <h5 class="mb-1">Welcome, <strong>@userName</strong></h5>
-            <span class="badge @(isTrainer ? "bg-success" : "bg-primary")">
-                <i class="fas fa-user-tag me-1"></i> @userRole
-            </span>
-        </div>
-        <div class="d-flex align-items-center">
-    <div class="user-info-card mb-4 p-3 bg-light rounded shadow-sm d-flex justify-content-between align-items-center">
-        <div>
-            <h5 class="mb-1">Welcome, <strong>@userName</strong></h5>
-            <span class="badge @(isTrainer ? "bg-success" : "bg-primary")">
-                <i class="fas fa-user-tag me-1"></i> @userRole
-            </span>
-        </div>
-        <div class="d-flex align-items-center">
-                @if (userEmail != null)
-            {
-                <div class="d-flex align-items-center">
-                    <small class="text-muted me-3">
-                        <i class="fas fa-envelope me-1"></i> @userEmail
-                    </small>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <a href="?filter=@(showOnlyMine ? "all" : "mine")"
-                           class="btn btn-sm @(showOnlyMine ? "btn-primary" : "btn-outline-primary")">
-                            <i class="fas fa-filter me-1"></i>
-                            @(showOnlyMine ? "Show All" : "My Posts")
-                        </a>
-                    }
-                </div>
-            }
-        </div>
-    </div>
+	<!-- User Info Section -->
+	<div class="user-info-card mb-4 p-3 bg-light rounded shadow-sm">
+		<div class="d-flex justify-content-between align-items-center">
+			<div>
+				<h5 class="mb-1">Welcome, <strong>@userName</strong></h5>
+				<span class="badge @(isTrainer ? "bg-success" : "bg-primary")">
+					<i class="fas fa-user-tag me-1"></i> @userRole
+				</span>
+			</div>
+			@if (userEmail != null)
+			{
+				<div class="d-flex align-items-center">
+					<small class="text-muted me-3">
+						<i class="fas fa-envelope me-1"></i> @userEmail
+					</small>
+					@if (User.Identity.IsAuthenticated)
+					{
+						<a href="?filter=@(showOnlyMine ? "all" : "mine")"
+						   class="btn btn-sm @(showOnlyMine ? "btn-primary" : "btn-outline-primary")">
+							<i class="fas fa-filter me-1"></i>
+							@(showOnlyMine ? "Show All" : "My Posts")
+						</a>
+					}
+				</div>
+			}
+		</div>
+	</div>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="display-4">Blog Posts @(showOnlyMine ? "(My Posts)" : "")</h1>
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h1 class="display-4">Blog Posts @(showOnlyMine ? "(My Posts)" : "")</h1>
 
-        @if (isTrainer)
-        {
-            <a asp-page="Create" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>Create New
-            </a>
-        }
-    </div>
+		@if (isTrainer)
+		{
+			<a asp-page="Create" class="btn btn-primary">
+				<i class="fas fa-plus me-2"></i>Create New
+			</a>
+		}
+	</div>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        @foreach (var item in Model.BlogPost)
-        {
-            if (showOnlyMine && item.AuthorId.ToString() != userId)
-            {
-                continue;
-            }
+	<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+		@foreach (var item in Model.BlogPost)
+		{
+			if ((showOnlyMine && item.AuthorId.ToString() != userId) ||
+			(!showOnlyMine && item.IsPublished != true && item.AuthorId.ToString() != userId))
+			{
+				continue;
+			}
 
-            var isMyPost = item.AuthorId.ToString() == userId;
+			var isMyPost = item.AuthorId.ToString() == userId;
 
-            <div class="col">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-header bg-white">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-info">@Html.DisplayFor(modelItem => item.Category)</span>
-                            @if ((bool)item.IsPublished)
-                            {
-                                <span class="badge bg-success">Published</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning text-dark">Draft</span>
-                            }
-                        </div>
-                    </div>
+			<div class="col">
+				<div class="card h-100 shadow-sm">
+					<div class="card-header bg-white">
+						<div class="d-flex justify-content-between align-items-center">
+							<span class="badge bg-info">@Html.DisplayFor(modelItem => item.Category)</span>
+							@if ((bool)item.IsPublished)
+							{
+								<span class="badge bg-success">Published</span>
+							}
+							else
+							{
+								<span class="badge bg-secondary">Hidden</span>
+							}
+						</div>
+					</div>
 
-                    <div class="card-body">
-                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
-                        <p class="card-text text-muted small">/@Html.DisplayFor(modelItem => item.Slug)</p>
+					<div class="card-body">
+						<h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+						<p class="card-text text-muted small">/@Html.DisplayFor(modelItem => item.Slug)</p>
 
-                        <div class="mb-3">
-                            @if (item.Content.Length > 100)
-                            {
-                                <p class="card-text">@item.Content.Substring(0, 100)...</p>
-                            }
-                            else
-                            {
-                                <p class="card-text">@item.Content</p>
-                            }
-                        </div>
+						<div class="mb-3">
+							@if (item.Content.Length > 100)
+							{
+								<p class="card-text">@item.Content.Substring(0, 100)...</p>
+							}
+							else
+							{
+								<p class="card-text">@item.Content</p>
+							}
+						</div>
 
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">
-                                <i class="fas fa-calendar me-1"></i>
-                                @item.CreatedAt?.ToString("MMM dd, yyyy")
-                            </small>
-                            <small class="text-muted">
-                                <i class="fas fa-user me-1"></i>
-                                @Html.DisplayFor(modelItem => item.Author.Email)
-                                @if (isMyPost)
-                                {
-                                    <span class="badge bg-secondary ms-1">Me</span>
-                                }
-                            </small>
-                        </div>
-                    </div>
+						<div class="d-flex justify-content-between align-items-center">
+							<small class="text-muted">
+								<i class="fas fa-calendar me-1"></i>
+								@item.CreatedAt?.ToString("MMM dd, yyyy")
+							</small>
+							<small class="text-muted">
+								<i class="fas fa-user me-1"></i>
+								@Html.DisplayFor(modelItem => item.Author.Email)
+								@if (isMyPost)
+								{
+									<span class="badge bg-secondary ms-1">Me</span>
+								}
+							</small>
+						</div>
+					</div>
 
-                    <div class="card-footer bg-white border-top-0">
-                        <div class="d-flex justify-content-between">
-                            <a asp-page="./Details" asp-route-id="@item.PostId" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-eye me-1"></i>View
-                            </a>
-                            <div>
-                                @if (isMyPost)
-                                {
-                                    <a asp-page="./Edit" asp-route-id="@item.PostId" class="btn btn-sm btn-outline-secondary me-1">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a asp-page="./Delete" asp-route-id="@item.PostId" class="btn btn-sm btn-outline-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
+					<div class="card-footer bg-white border-top-0">
+						<div class="d-flex justify-content-between">
+							<a asp-page="./Details" asp-route-id="@item.PostId" class="btn btn-sm btn-outline-primary">
+								<i class="fas fa-eye me-1"></i>View
+							</a>
+							<div>
+								@if (isMyPost)
+								{
+									<a asp-page="./Edit" asp-route-id="@item.PostId" class="btn btn-sm btn-outline-secondary me-1">
+										<i class="fas fa-edit"></i>
+									</a>
+									<a asp-page="./Delete" asp-route-id="@item.PostId" class="btn btn-sm btn-outline-danger">
+										<i class="fas fa-trash"></i>
+									</a>
+								}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
 </div>
 
 @if (!Model.BlogPost.Any())
 {
-    <div class="alert alert-info mt-4">
-        No blog posts found. @(isTrainer ? "Create your first post!" : "")
-    </div>
+	<div class="alert alert-info mt-4">
+		No blog posts found. @(isTrainer ? "Create your first post!" : "")
+	</div>
 }
 else if (showOnlyMine && !Model.BlogPost.Any(p => p.AuthorId == int.Parse(userId)))
 {
-    <div class="alert alert-warning mt-4">
-        You haven't created any posts yet.
-        @if (isTrainer)
-        {
-            <a asp-page="Create" class="alert-link">Create your first post!</a>
-        }
-    </div>
+	<div class="alert alert-warning mt-4">
+		You haven't created any posts yet.
+		@if (isTrainer)
+		{
+			<a asp-page="Create" class="alert-link">Create your first post!</a>
+		}
+	</div>
 }
 
 <style>
-    .user-info-card {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border-left: 4px solid @(isTrainer ? "#28a745" : "#007bff");
-    }
+	.user-info-card {
+		background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+		border-left: 4px solid @(isTrainer ? "#28a745" : "#007bff");
+	}
 </style>

@@ -7,16 +7,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MSSQLServer.EntitiesModels;
+using Services.Services;
 
 namespace GymMaster_RazorPages.Pages.BlogPost
 {
     public class EditModel : PageModel
     {
-        private readonly MSSQLServer.EntitiesModels.GymManagementContext _context;
+        private readonly IBlogPostService _blogPostService;
 
-        public EditModel(MSSQLServer.EntitiesModels.GymManagementContext context)
+        public EditModel(IBlogPostService blogPostService)
         {
-            _context = context;
+            _blogPostService = blogPostService;
         }
 
         [BindProperty]
@@ -29,13 +30,13 @@ namespace GymMaster_RazorPages.Pages.BlogPost
                 return NotFound();
             }
 
-            var blogpost =  await _context.BlogPosts.FirstOrDefaultAsync(m => m.PostId == id);
+            var blogpost =  await _blogPostService.GetByIdAsync((int)id);
             if (blogpost == null)
             {
                 return NotFound();
             }
             BlogPost = blogpost;
-           ViewData["AuthorId"] = new SelectList(_context.Users, "UserId", "Email");
+
             return Page();
         }
 
@@ -43,35 +44,26 @@ namespace GymMaster_RazorPages.Pages.BlogPost
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            //ModelState.Remove("BlogPost.PostId");
+            //ModelState.Remove("BlogPost.AuthorId");
+            ModelState.Remove("BlogPost.Author");
+            ModelState.Remove("BlogPost.Slug");
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(BlogPost).State = EntityState.Modified;
+            BlogPost.Slug = BlogPost.Title.ToLower().Replace(" ", "-").Replace("'", "").Replace("\"", "");
 
-            try
+            if (BlogPost.IsPublished == true)
             {
-                await _context.SaveChangesAsync();
+                BlogPost.PublishedAt = DateTime.Now;
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BlogPostExists(BlogPost.PostId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _blogPostService.UpdateAsync(BlogPost);
 
             return RedirectToPage("./Index");
-        }
-
-        private bool BlogPostExists(int id)
-        {
-            return _context.BlogPosts.Any(e => e.PostId == id);
         }
     }
 }
