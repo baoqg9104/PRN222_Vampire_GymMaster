@@ -1,0 +1,125 @@
+﻿@page
+@model GymMaster_RazorPages.Pages.WorkoutSessions.ClientProgressModel
+@{
+    ViewData["Title"] = "Client Progress";
+}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Progress for @Model.Member.FirstName @Model.Member.LastName</h2>
+        <a asp-page="/Trainer/TrainerDashboard" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+
+    @if (Model.Sessions.Any())
+    {
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Workout History</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Exercise</th>
+                                <th>Day</th>
+                                <th>Planned</th>
+                                <th>Completed</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Sessions)
+                            {
+                                <tr>
+                                    <td>@item.Session.CompletedAt?.ToString("MMM dd, yyyy")</td>
+                                    <td>@item.Plan.ExerciseName</td>
+                                    <td>@GetDayName(item.Plan.DayOfWeek)</td>
+                                    <td>@item.Plan.Sets × @item.Plan.Reps</td>
+                                    <td>@item.Session.ActualSets × @item.Session.ActualReps</td>
+                                    <td>@item.Session.Notes</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Progress Chart -->
+                <div class="mt-4">
+                    <h5>Progress Over Time</h5>
+                    <canvas id="progressChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">No workout sessions recorded yet.</div>
+    }
+</div>
+
+@* @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Prepare chart data
+        const sessions = @Json.Serialize(Model.Sessions
+            .Where(s => s.Plan != null)
+            .GroupBy(s => s.Plan.ExerciseName)
+            .Select(g => new {
+                Exercise = g.Key,
+                Dates = g.Select(s => s.Session.CompletedAt?.ToString("MMM dd")).ToList(),
+                Reps = g.Select(s => s.Session.ActualReps).ToList()
+            }));
+
+        // Create chart
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: sessions[0]?.Dates || [],
+                datasets: sessions.map((exercise, i) => ({
+                    label: exercise.Exercise,
+                    data: exercise.Reps,
+                    borderColor: getColor(i),
+                    tension: 0.1
+                }))
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Repetitions' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Session Date' }
+                    }
+                }
+            }
+        });
+
+        function getColor(index) {
+            const colors = [
+                '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
+                '#5a5c69', '#858796', '#3a3b45', '#f8f9fc', '#5a5c69'
+            ];
+            return colors[index % colors.length];
+        }
+    </script>
+} *@
+
+@functions {
+    public string GetDayName(int dayOfWeek)
+    {
+        return dayOfWeek switch
+        {
+            1 => "Monday",
+            2 => "Tuesday",
+            3 => "Wednesday",
+            4 => "Thursday",
+            5 => "Friday",
+            6 => "Saturday",
+            7 => "Sunday",
+            _ => "Unknown"
+        };
+    }
+}

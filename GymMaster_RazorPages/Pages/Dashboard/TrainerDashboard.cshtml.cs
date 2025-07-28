@@ -23,6 +23,8 @@ namespace GymMaster_RazorPages.Pages.Dashboard
             public User Member { get; set; }
             public UserMembership Membership { get; set; }
             public List<WorkoutPlan> WorkoutPlans { get; set; }
+
+            public int MemberId => Member.UserId;
         }
 
         public async Task OnGetAsync()
