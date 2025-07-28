@@ -1,0 +1,129 @@
+﻿@page
+@using System.Security.Claims
+@model GymMaster_RazorPages.Pages.BodyMeasurement.IndexModel
+@{
+    ViewData["Title"] = "Body Measurements";
+    var isTrainer = User.IsInRole("Trainer");
+    var isMember = User.IsInRole("Member");
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}
+
+<div class="container">
+    @if (isTrainer)
+    {
+        <h2>Manage Member Measurements</h2>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Member</th>
+                        <th>Contact</th>
+                        <th>Last Check</th>
+                        <th>Weight (kg)</th>
+                        <th>Body Fat %</th>
+                        <th>Muscle Mass (kg)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var assignment in Model.TrainerAssignments)
+                    {
+                        var member = assignment.Member;
+                        var lastMeasurement = member.BodyMeasurements.OrderByDescending(m => m.MeasuredAt).FirstOrDefault();
+
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-light rounded p-1 me-2">
+                                        <i class="fas fa-user fa-lg text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">@member.FirstName @member.LastName</h6>
+                                        @* <small class="text-muted">ID: @member.UserId</small> *@
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>@member.Email</div>
+                                <small class="text-muted">@member.Phone</small>
+                            </td>
+                            <td>
+                                @if (lastMeasurement != null)
+                                {
+                                    <span>@lastMeasurement.MeasuredAt?.ToString("dd/MM/yyyy hh:mm:ss")</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No data</span>
+                                }
+                            </td>
+                            <td>
+                                @lastMeasurement?.WeightKg?.ToString("0.0")
+                            </td>
+                            <td>
+                                @lastMeasurement?.BodyFatPct?.ToString("0.0")
+                            </td>
+                            <td>
+                                @lastMeasurement?.MuscleMassKg?.ToString("0.0")
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    @if (lastMeasurement == null)
+                                    {
+                                        <a asp-page="Create" asp-route-memberId="@member.UserId"
+                                           class="btn btn-sm btn-success" title="Add new measurement">
+                                            <i class="fas fa-plus"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-page="./Create" asp-route-memberId="@member.UserId"
+                                           class="btn btn-sm btn-warning" title="Add new measurement">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        @* <a asp-page="MemberMeasurements" asp-route-memberId="@member.UserId" *@
+                                        @*    class="btn btn-sm btn-info" title="View all"> *@
+                                        @*     <i class="fas fa-list"></i> *@
+                                        @* </a> *@
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    }
+    else if (isMember)
+    {
+        <h2>My Body Measurements</h2>
+        @* <a asp-page="ProgressChart" class="btn btn-info mb-3"> *@
+        @*     <i class="fas fa-chart-line"></i> View Progress *@
+        @* </a> *@
+
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Weight (kg)</th>
+                    <th>Body Fat %</th>
+                    <th>Muscle Mass (kg)</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Measurements)
+                {
+                    <tr>
+                        <td>@item.MeasuredAt?.ToString("dd/MM/yyyy hh:mm:ss")</td>
+                        <td>@item.WeightKg</td>
+                        <td>@item.BodyFatPct</td>
+                        <td>@item.MuscleMassKg</td>
+                        <td>@item.Notes</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
