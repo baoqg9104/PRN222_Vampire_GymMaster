@@ -6,16 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using MSSQLServer.EntitiesModels;
+using Services.Services;
 
 namespace GymMaster_RazorPages.Pages.BlogPost
 {
     public class DeleteModel : PageModel
     {
-        private readonly MSSQLServer.EntitiesModels.GymManagementContext _context;
+        private readonly IBlogPostService _blogPostService;
 
-        public DeleteModel(MSSQLServer.EntitiesModels.GymManagementContext context)
+        public DeleteModel(IBlogPostService blogPostService)
         {
-            _context = context;
+            _blogPostService = blogPostService;
         }
 
         [BindProperty]
@@ -28,7 +29,7 @@ namespace GymMaster_RazorPages.Pages.BlogPost
                 return NotFound();
             }
 
-            var blogpost = await _context.BlogPosts.FirstOrDefaultAsync(m => m.PostId == id);
+            var blogpost = await _blogPostService.GetByIdAsync((int)id);
 
             if (blogpost is not null)
             {
@@ -47,13 +48,7 @@ namespace GymMaster_RazorPages.Pages.BlogPost
                 return NotFound();
             }
 
-            var blogpost = await _context.BlogPosts.FindAsync(id);
-            if (blogpost != null)
-            {
-                BlogPost = blogpost;
-                _context.BlogPosts.Remove(BlogPost);
-                await _context.SaveChangesAsync();
-            }
+            await _blogPostService.DeleteAsync((int)id);
 
             return RedirectToPage("./Index");
         }

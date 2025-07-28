@@ -65,11 +65,8 @@ public class BlogPostRepository : IBlogPostRepository
 
     public async Task<BlogPost> UpdateAsync(BlogPost blogPost)
     {
-        if (blogPost == null)
-        {
-            throw new ArgumentNullException(nameof(blogPost), "Blog post cannot be null");
-        }
-        _context.BlogPosts.Update(blogPost);
+        _context.Entry(blogPost).State = EntityState.Modified;
+
         await _context.SaveChangesAsync();
         return blogPost;
     }
