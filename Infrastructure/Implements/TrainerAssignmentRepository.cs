@@ -74,6 +74,8 @@ public class TrainerAssignmentRepository: ITrainerAssignmentRepository
         return await _context.TrainerAssignments
             .Where(bm => bm.TrainerId == trainerId)
             .Include(bm => bm.WorkoutPlans)
+            .Include(bm => bm.Member)
+                .ThenInclude(m => m.BodyMeasurements)
             .ToListAsync();
     }
 

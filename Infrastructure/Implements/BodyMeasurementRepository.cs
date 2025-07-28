@@ -65,11 +65,7 @@ public class BodyMeasurementRepository : IBodyMeasurementRepository
 
     public async Task<BodyMeasurement> UpdateAsync(BodyMeasurement bodyMeasurement)
     {
-        if (bodyMeasurement == null)
-        {
-            throw new ArgumentNullException(nameof(bodyMeasurement), "Body measurement cannot be null");
-        }
-        _context.BodyMeasurements.Update(bodyMeasurement);
+        _context.Entry(bodyMeasurement).State = EntityState.Modified;
         await _context.SaveChangesAsync();
         return bodyMeasurement;
     }
