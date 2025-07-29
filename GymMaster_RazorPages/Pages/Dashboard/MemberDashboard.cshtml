@@ -97,28 +97,104 @@
                     <h5>Huấn luyện viên của bạn</h5>
                 </div>
                 <div class="card-body">
-                    @if (Model.CurrentTrainer != null)
+                    @if (Model.ActiveTrainerAssignments != null && Model.ActiveTrainerAssignments.Any())
                     {
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <img width="50%" src="@Model.CurrentTrainer.LastName" class="rounded-circle" alt="Trainer">
+                        @foreach (var assignment in Model.ActiveTrainerAssignments)
+                        {
+                            var today = DateOnly.FromDateTime(DateTime.Today);
+                            var isActive = assignment.StartDate <= today && (assignment.EndDate == null || assignment.EndDate >= today);
+                            var isFuture = assignment.StartDate > today;
+
+                            <div class="trainer-assignment mb-4 p-3 border rounded @(isActive ? "border-success" : (isFuture ? "border-info" : "border-secondary"))">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="trainer-avatar @(isActive ? "bg-success" : (isFuture ? "bg-info" : "bg-secondary")) text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                            <i class="fas fa-user fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <h5 class="mb-1">@assignment.Trainer.FirstName @assignment.Trainer.LastName</h5>
+                                                <p class="mb-1 text-muted">@assignment.Trainer.Email</p>
+                                                @if (!string.IsNullOrEmpty(assignment.Trainer.Specialization))
+                                                {
+                                                    <p class="mb-1"><strong>Chuyên môn:</strong> @assignment.Trainer.Specialization</p>
+                                                }
+                                                @if (!string.IsNullOrEmpty(assignment.Trainer.Certification))
+                                                {
+                                                    <p class="mb-1"><strong>Chứng chỉ:</strong> @assignment.Trainer.Certification</p>
+                                                }
+                                                @if (!string.IsNullOrEmpty(assignment.Goals))
+                                                {
+                                                    <p class="mb-1"><strong>Mục tiêu:</strong> @assignment.Goals</p>
+                                                }
+                                            </div>
+                                            <div class="col-md-4 text-end">
+                                                <div class="assignment-dates">
+                                                    <p class="mb-1 text-primary">
+                                                        <i class="fas fa-play-circle"></i>
+                                                        <strong>Bắt đầu:</strong><br>
+                                                        <small>@assignment.StartDate.ToString("dd/MM/yyyy")</small>
+                                                    </p>
+                                                    @if (assignment.EndDate.HasValue)
+                                                    {
+                                                        <p class="mb-1 text-warning">
+                                                            <i class="fas fa-stop-circle"></i>
+                                                            <strong>Kết thúc:</strong><br>
+                                                            <small>@assignment.EndDate.Value.ToString("dd/MM/yyyy")</small>
+                                                        </p>
+                                                        var daysLeft = (assignment.EndDate.Value.ToDateTime(TimeOnly.MinValue) - DateTime.Today).Days;
+                                                        @if (daysLeft > 0)
+                                                        {
+                                                            <span class="badge bg-info">Còn @daysLeft ngày</span>
+                                                        }
+                                                        else if (daysLeft == 0)
+                                                        {
+                                                            <span class="badge bg-warning">Hết hạn hôm nay</span>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <p class="mb-1 text-info">
+                                                            <i class="fas fa-infinity"></i>
+                                                            <strong>Thời gian:</strong><br>
+                                                            <small>Không giới hạn</small>
+                                                        </p>
+                                                    }
+
+                                                    @* Hiển thị trạng thái *@
+                                                    @if (isActive)
+                                                    {
+                                                        <span class="badge bg-success">Đang hoạt động</span>
+                                                    }
+                                                    else if (isFuture)
+                                                    {
+                                                        <span class="badge bg-info">Sắp bắt đầu</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                            <a asp-page="/Trainer/Details" asp-route-id="@assignment.Trainer.UserId"
+                                               class="btn btn-sm btn-outline-success me-2">
+                                                <i class="fas fa-eye"></i> Xem chi tiết
+                                            </a>
+                                            <small class="text-muted">
+                                                <i class="fas fa-id-card"></i>
+                                                Gói: @assignment.Membership?.Plan?.Name
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h3>@Model.CurrentTrainer.FirstName</h3>
-                                <p class="mb-1"><strong>Chuyên môn:</strong> @Model.CurrentTrainer.Specialization</p>
-                                <p class="mb-1"><strong>Chứng chỉ:</strong> @Model.CurrentTrainer.Certification</p>
-                                <a asp-page="/Trainer/Details" asp-route-id="@Model.CurrentTrainer.UserId" 
-                                   class="btn btn-sm btn-outline-success mt-2">
-                                    Xem chi tiết
-                                </a>
-                            </div>
-                        </div>
+                        }
                     }
                     else
                     {
                         <div class="alert alert-warning">
                             Bạn chưa được phân công huấn luyện viên
-                            <a asp-page="/Trainer/Request" class="alert-link">Yêu cầu ngay</a>
+                            <a asp-page="/TrainerAssignments/Create" asp-route-memberId="@Model.CurrentUser.UserId" class="alert-link">Yêu cầu ngay</a>
                         </div>
                     }
                 </div>

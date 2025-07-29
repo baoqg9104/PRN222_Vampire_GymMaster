@@ -90,5 +90,18 @@ public class TrainerAssignmentRepository: ITrainerAssignmentRepository
         return trainerAssignment;
     }
 
-    
+    public async Task<List<TrainerAssignment>> GetActiveTrainerAssignmentsByMemberIdAsync(int memberId)
+    {
+        var today = DateOnly.FromDateTime(DateTime.Today);
+
+        return await _context.TrainerAssignments
+            .Include(ta => ta.Trainer) // Include trainer info
+            .Include(ta => ta.Membership) // Include membership info
+                .ThenInclude(um => um.Plan) // Include plan info
+            .Where(ta => ta.MemberId == memberId
+                      && (ta.EndDate == null || ta.EndDate >= today)) // Chỉ loại bỏ những assignments đã quá hạn
+            .OrderByDescending(ta => ta.StartDate) // Sắp xếp theo ngày bắt đầu mới nhất
+            .ToListAsync();
+    }
+
 }

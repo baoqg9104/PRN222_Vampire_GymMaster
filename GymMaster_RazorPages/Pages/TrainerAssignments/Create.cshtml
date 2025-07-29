@@ -1,7 +1,7 @@
 ﻿@page
 @model GymMaster_RazorPages.Pages.TrainerAssignments.CreateModel
 @{
-    ViewData["Title"] = "Create Trainer Assignment";
+    ViewData["Title"] = Model.IsAdmin ? "Create Trainer Assignment" : "Yêu cầu phân công huấn luyện viên";
 }
 
 <style>
@@ -61,6 +61,12 @@
             outline: 0;
         }
 
+        .form-control:disabled {
+            background-color: #f8f9fa;
+            border-color: #e9ecef;
+            color: #6c757d;
+        }
+
     .form-select {
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
         background-repeat: no-repeat;
@@ -115,13 +121,58 @@
             padding-left: 1.5rem;
         }
 
-   
+    .admin-field {
+        background-color: #f8f9fa;
+        border: 2px dashed #28a745;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .admin-badge {
+        background-color: #28a745;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+
+    .date-validation-info {
+        background-color: #e7f3ff;
+        border: 1px solid #b3d9ff;
+        border-radius: 0.375rem;
+        padding: 0.75rem;
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+        .date-validation-info .text-info {
+            color: #0c5460 !important;
+            font-weight: 500;
+        }
 </style>
 
 <div class="page-header text-center">
     <div class="container">
-        <h1><i class="fas fa-user-plus"></i> Create Trainer Assignment</h1>
-        <p>Assign a trainer to a member for their fitness journey</p>
+        @if (Model.IsAdmin)
+        {
+            <h1><i class="fas fa-user-plus"></i> Create Trainer Assignment <span class="admin-badge">Admin</span></h1>
+            <p>Assign a trainer to a member for their fitness journey</p>
+        }
+        else
+        {
+            <h1><i class="fas fa-hand-paper"></i> Yêu cầu phân công huấn luyện viên</h1>
+            <p>Gửi yêu cầu để được phân công huấn luyện viên phù hợp</p>
+        }
     </div>
 </div>
 
@@ -136,22 +187,32 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label asp-for="MemberId" class="form-label">
-                                    <i class="fas fa-user"></i> Member
+                                    <i class="fas fa-user"></i>
+                                    @(Model.IsAdmin ? "Member" : "Thành viên (Bạn)")
                                 </label>
-                                <select asp-for="MemberId" class="form-control form-select" asp-items="ViewBag.MemberId">
-                                    <option value="">-- Select a Member --</option>
+                                <select asp-for="MemberId" class="form-control form-select" asp-items="ViewBag.MemberId"
+                                        disabled="@Model.IsMemberRequest">
+                                    @if (Model.IsAdmin)
+                                    {
+                                        <option value="">-- Select a Member --</option>
+                                    }
                                 </select>
                                 <span asp-validation-for="MemberId" class="text-danger"></span>
+                                @if (Model.IsMemberRequest && !Model.IsAdmin)
+                                {
+                                    <small class="form-text text-muted">Thông tin của bạn (không thể thay đổi)</small>
+                                }
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label asp-for="TrainerId" class="form-label">
-                                    <i class="fas fa-dumbbell"></i> Trainer
+                                    <i class="fas fa-dumbbell"></i>
+                                    @(Model.IsAdmin ? "Trainer" : "Huấn luyện viên mong muốn")
                                 </label>
                                 <select asp-for="TrainerId" class="form-control form-select" asp-items="ViewBag.TrainerId">
-                                    <option value="">-- Select a Trainer --</option>
+                                    <option value="">@(Model.IsAdmin ? "-- Select a Trainer --" : "-- Chọn huấn luyện viên --")</option>
                                 </select>
                                 <span asp-validation-for="TrainerId" class="text-danger"></span>
                             </div>
@@ -160,39 +221,73 @@
 
                     <div class="form-group">
                         <label asp-for="MembershipId" class="form-label">
-                            <i class="fas fa-id-card"></i> Membership
+                            <i class="fas fa-id-card"></i>
+                            @(Model.IsAdmin ? "Membership" : "Gói tập của bạn")
                         </label>
                         <select asp-for="MembershipId" class="form-control form-select" asp-items="ViewBag.MembershipId">
-                            <option value="">-- Select a Membership --</option>
+                            <option value="">@(Model.IsAdmin ? "-- Select a Membership --" : "-- Chọn gói tập --")</option>
                         </select>
                         <span asp-validation-for="MembershipId" class="text-danger"></span>
+                        @if (!Model.IsAdmin)
+                        {
+                            <small class="form-text text-muted">Chỉ hiển thị gói tập hiện tại của bạn</small>
+                        }
                     </div>
+
+                    @if (Model.IsAdmin)
+                    {
+                        <div class="admin-field">
+                            <div class="form-group mb-0">
+                                <label asp-for="StartDate" class="form-label">
+                                    <i class="fas fa-calendar-check"></i> Start Date <span class="admin-badge">Admin Only</span>
+                                </label>
+                                <input asp-for="StartDate" class="form-control" type="date" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                                <small class="form-text text-muted">Admin can set custom start date for the assignment</small>
+                            </div>
+                        </div>
+                    }
 
                     <div class="form-group">
                         <label asp-for="EndDate" class="form-label">
-                            <i class="fas fa-calendar-alt"></i> End Date (Optional)
+                            <i class="fas fa-calendar-alt"></i>
+                            @(Model.IsAdmin ? "End Date (Optional)" : "Ngày kết thúc mong muốn (Tùy chọn)")
                         </label>
                         <input asp-for="EndDate" class="form-control" type="date" />
                         <span asp-validation-for="EndDate" class="text-danger"></span>
-                        <small class="form-text text-muted">Leave empty if this is an ongoing assignment</small>
+                        <small class="form-text text-muted">
+                            @(Model.IsAdmin ? "Leave empty if this is an ongoing assignment. Must be after Start Date." : "Để trống nếu muốn được hướng dẫn dài hạn. Phải sau ngày bắt đầu.")
+                        </small>
                     </div>
 
                     <div class="form-group">
                         <label asp-for="Goals" class="form-label">
-                            <i class="fas fa-target"></i> Goals (Optional)
+                            <i class="fas fa-target"></i>
+                            @(Model.IsAdmin ? "Goals (Optional)" : "Mục tiêu và mong muốn (Tùy chọn)")
                         </label>
                         <textarea asp-for="Goals" class="form-control" rows="3"
-                                  placeholder="Enter fitness goals and objectives for this assignment..."></textarea>
+                                  placeholder="@(Model.IsAdmin ? "Enter fitness goals and objectives for this assignment..." : "Nhập mục tiêu tập luyện và những gì bạn mong muốn...")"></textarea>
                         <span asp-validation-for="Goals" class="text-danger"></span>
                     </div>
 
                     <div class="form-group text-center">
                         <button type="submit" class="btn btn-primary me-2">
-                            <i class="fas fa-save"></i> Create Assignment
+                            <i class="fas fa-@(Model.IsAdmin ? "save" : "paper-plane")"></i>
+                            @(Model.IsAdmin ? "Create Assignment" : "Gửi yêu cầu")
                         </button>
-                        <a asp-page="Index" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Back to List
-                        </a>
+
+                        @if (Model.IsAdmin)
+                        {
+                            <a asp-page="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to List
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-page="/Dashboard/MemberDashboard" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Quay lại Dashboard
+                            </a>
+                        }
                     </div>
                 </form>
             </div>

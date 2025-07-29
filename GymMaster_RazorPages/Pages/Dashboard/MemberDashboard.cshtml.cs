@@ -15,9 +15,10 @@ namespace GymMaster_RazorPages.Pages.Dashboard
 
         [BindProperty]
         public User CurrentUser { get; set; }
-
         public UserMembership CurrentMembership { get; set; }
-        public User CurrentTrainer { get; set; }
+
+        // Changed from single trainer to list of active assignments
+        public List<TrainerAssignment> ActiveTrainerAssignments { get; set; } = new List<TrainerAssignment>();
 
         public MemberDashboardModel(
             IUserService userService,
@@ -32,15 +33,18 @@ namespace GymMaster_RazorPages.Pages.Dashboard
         public async Task<IActionResult> OnGetAsync()
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
             CurrentUser = await _userService.GetByIdAsync(userId);
+
             if (CurrentUser == null)
             {
                 return RedirectToPage("/Account/Login");
             }
 
+            // Load current membership
             CurrentMembership = await _membershipService.GetCurrentMembershipAsync(userId);
-            CurrentTrainer = await _trainerService.GetCurrentTrainerAsync(userId);
+
+            // Load all active trainer assignments
+            ActiveTrainerAssignments = await _trainerService.GetActiveTrainerAssignmentsByMemberIdAsync(userId);
 
             return Page();
         }
@@ -49,6 +53,10 @@ namespace GymMaster_RazorPages.Pages.Dashboard
         {
             if (!ModelState.IsValid)
             {
+                // Reload data if validation fails
+                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                CurrentMembership = await _membershipService.GetCurrentMembershipAsync(userId);
+                ActiveTrainerAssignments = await _trainerService.GetActiveTrainerAssignmentsByMemberIdAsync(userId);
                 return Page();
             }
 
@@ -61,6 +69,11 @@ namespace GymMaster_RazorPages.Pages.Dashboard
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, $"Lỗi khi cập nhật: {ex.Message}");
+
+                // Reload data if update fails
+                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                CurrentMembership = await _membershipService.GetCurrentMembershipAsync(userId);
+                ActiveTrainerAssignments = await _trainerService.GetActiveTrainerAssignmentsByMemberIdAsync(userId);
                 return Page();
             }
         }

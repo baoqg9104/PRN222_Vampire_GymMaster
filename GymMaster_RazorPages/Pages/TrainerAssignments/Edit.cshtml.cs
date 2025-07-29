@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MSSQLServer.EntitiesModels;
 using Services.Services;
+using System.Security.Claims;
 
 namespace GymMaster_RazorPages.Pages.TrainerAssignments
 {
@@ -26,10 +27,9 @@ namespace GymMaster_RazorPages.Pages.TrainerAssignments
             _membershipService = membershipService;
         }
 
-        // Don't bind the complex object directly
         public TrainerAssignment TrainerAssignment { get; set; } = default!;
 
-        // Bind individual properties instead
+        // Bind individual properties
         [BindProperty]
         public int AssignmentId { get; set; }
 
@@ -52,10 +52,19 @@ namespace GymMaster_RazorPages.Pages.TrainerAssignments
         public string? Goals { get; set; }
 
         [BindProperty]
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            // Check admin permission
+            var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var currentUser = await _userService.GetByIdAsync(currentUserId);
+
+            if (currentUser?.Role != "Admin")
+            {
+                return RedirectToPage("/Dashboard/Index");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -78,7 +87,7 @@ namespace GymMaster_RazorPages.Pages.TrainerAssignments
             StartDate = trainerAssignment.StartDate;
             EndDate = trainerAssignment.EndDate;
             Goals = trainerAssignment.Goals;
-            IsActive = trainerAssignment.IsActive;
+            IsActive = (bool)trainerAssignment.IsActive;
 
             await LoadSelectListsAsync();
             return Page();
@@ -86,23 +95,59 @@ namespace GymMaster_RazorPages.Pages.TrainerAssignments
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // Debug: Check if values are being received
+            // Check admin permission
+            var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var currentUser = await _userService.GetByIdAsync(currentUserId);
+
+            if (currentUser?.Role != "Admin")
+            {
+                return RedirectToPage("/Dashboard/Index");
+            }
+
+            // Debug logging
             System.Diagnostics.Debug.WriteLine($"AssignmentId: {AssignmentId}");
             System.Diagnostics.Debug.WriteLine($"MemberId: {MemberId}");
             System.Diagnostics.Debug.WriteLine($"TrainerId: {TrainerId}");
             System.Diagnostics.Debug.WriteLine($"MembershipId: {MembershipId}");
 
-            // Manual validation
-            if (MemberId == 0 || TrainerId == 0 || MembershipId == 0)
+            // Validation
+            bool isValid = true;
+            var errorMessages = new List<string>();
+
+            if (MemberId == 0)
             {
-                if (MemberId == 0)
-                    ModelState.AddModelError(nameof(MemberId), "The Member field is required.");
+                errorMessages.Add("The Member field is required.");
+                isValid = false;
+            }
 
-                if (TrainerId == 0)
-                    ModelState.AddModelError(nameof(TrainerId), "The Trainer field is required.");
+            if (TrainerId == 0)
+            {
+                errorMessages.Add("The Trainer field is required.");
+                isValid = false;
+            }
 
-                if (MembershipId == 0)
-                    ModelState.AddModelError(nameof(MembershipId), "The Membership field is required.");
+            if (MembershipId == 0)
+            {
+                errorMessages.Add("The Membership field is required.");
+                isValid = false;
+            }
+
+            // Date validation - simple check: Start Date should not be after End Date
+            if (EndDate.HasValue)
+            {
+                if (EndDate.Value <= StartDate)
+                {
+                    errorMessages.Add("End Date must be after Start Date.");
+                    isValid = false;
+                }
+            }
+
+            if (!isValid)
+            {
+                foreach (var error in errorMessages)
+                {
+                    ModelState.AddModelError("", error);
+                }
 
                 // Reload the original assignment for display
                 TrainerAssignment = await _trainerAssignmentService.GetByIdAsync(AssignmentId);
@@ -126,6 +171,7 @@ namespace GymMaster_RazorPages.Pages.TrainerAssignments
             try
             {
                 await _trainerAssignmentService.UpdateAsync(updatedAssignment);
+                TempData["SuccessMessage"] = "Trainer assignment updated successfully!";
                 return RedirectToPage("./Index");
             }
             catch (Exception ex)
@@ -142,15 +188,51 @@ namespace GymMaster_RazorPages.Pages.TrainerAssignments
         private async Task LoadSelectListsAsync()
         {
             var users = await _userService.GetAllAsync();
-            var memberships = await _membershipService.GetAllAsync();
 
-            // Filter users by role
+            // Load all members
             var members = users.Where(u => u.Role == "Member").ToList();
-            var trainers = users.Where(u => u.Role == "Trainer").ToList();
+            var memberSelectList = members.Select(m => new
+            {
+                UserId = m.UserId,
+                DisplayText = !string.IsNullOrEmpty(m.FirstName) || !string.IsNullOrEmpty(m.LastName)
+                    ? $"{m.FirstName} {m.LastName}".Trim() + $" ({m.Email})"
+                    : m.Email
+            }).ToList();
 
-            ViewData["MemberId"] = new SelectList(members, "UserId", "Email", this.MemberId);
-            ViewData["TrainerId"] = new SelectList(trainers, "UserId", "Email", this.TrainerId);
-            ViewData["MembershipId"] = new SelectList(memberships, "MembershipId", "MembershipId", this.MembershipId);
+            ViewData["MemberId"] = new SelectList(memberSelectList, "UserId", "DisplayText", this.MemberId);
+
+            // Load all trainers
+            var trainers = users.Where(u => u.Role == "Trainer").ToList();
+            var trainerSelectList = trainers.Select(t => new
+            {
+                UserId = t.UserId,
+                DisplayText = !string.IsNullOrEmpty(t.FirstName) || !string.IsNullOrEmpty(t.LastName)
+                    ? $"{t.FirstName} {t.LastName}".Trim() + $" ({t.Email})"
+                    : t.Email
+            }).ToList();
+
+            ViewData["TrainerId"] = new SelectList(trainerSelectList, "UserId", "DisplayText", this.TrainerId);
+
+            // Load all current memberships for all members
+            var allCurrentMemberships = new List<object>();
+            foreach (var member in members)
+            {
+                var currentMembership = await _membershipService.GetCurrentMembershipAsync(member.UserId);
+                if (currentMembership != null)
+                {
+                    var memberDisplayName = !string.IsNullOrEmpty(member.FirstName) || !string.IsNullOrEmpty(member.LastName)
+                        ? $"{member.FirstName} {member.LastName}".Trim()
+                        : member.Email;
+
+                    allCurrentMemberships.Add(new
+                    {
+                        MembershipId = currentMembership.MembershipId,
+                        DisplayText = $"Member: {memberDisplayName} - Plan: {currentMembership.Plan?.Name ?? "Unknown"} ({currentMembership.StartDate:dd/MM/yyyy} - {currentMembership.EndDate:dd/MM/yyyy})"
+                    });
+                }
+            }
+
+            ViewData["MembershipId"] = new SelectList(allCurrentMemberships, "MembershipId", "DisplayText", this.MembershipId);
         }
     }
 }
