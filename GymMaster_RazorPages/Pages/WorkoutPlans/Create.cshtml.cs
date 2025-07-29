@@ -45,7 +45,7 @@ namespace GymMaster_RazorPages.Pages.WorkoutPlans
 
             await _workoutPlanService.AddAsync(WorkoutPlan);
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("/Dashboard/TrainerDashboard");
         }
 
         public async Task<IActionResult> OnGet(int? assignmentId)

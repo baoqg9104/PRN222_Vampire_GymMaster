@@ -52,8 +52,16 @@
                             <span asp-validation-for="CurrentUser.MedicalNotes" class="text-danger"></span>
                         </div>
 
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Update</button>
+
+                        @* <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Cập nhật</button>
+                        </div> *@
+                        <div class="alert alert-warning">
+                            <a asp-page="/TrainerAssignments/Create" asp-route-memberId="@Model.CurrentUser.UserId" class="alert-link">Chọn Gói tập</a>
+                        </div>
+                        <div class="alert alert-warning">
+                            <a asp-page="/Membership/Register" class="alert-link">Chọn Trainer  </a>
+
                         </div>
                     </form>
                 </div>

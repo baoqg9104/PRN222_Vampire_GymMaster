@@ -103,6 +103,8 @@ namespace GymMaster_RazorPages.Pages.TrainerAssignments
 
         public async Task<IActionResult> OnPostAsync()
         {
+
+
             // Get current user info
             var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var currentUser = await _userService.GetByIdAsync(currentUserId);
@@ -127,6 +129,18 @@ namespace GymMaster_RazorPages.Pages.TrainerAssignments
             // Validation
             bool isValid = true;
             var errorMessages = new List<string>();
+
+            // Check for existing assignment with same Member-Trainer-Membership combination
+            var existingAssignment = await _trainerAssignmentService.GetExistingAssignmentAsync(
+                this.MemberId,
+                this.TrainerId,
+                this.MembershipId);
+
+            if (existingAssignment != null)
+            {
+                errorMessages.Add("This member already has an assignment with the selected trainer for this membership.");
+                isValid = false;
+            }
             if (IsMemberRequest) this.MemberId = currentUserId;
 
             if (this.MemberId == 0)
@@ -288,7 +302,7 @@ namespace GymMaster_RazorPages.Pages.TrainerAssignments
                         allCurrentMemberships.Add(new
                         {
                             MembershipId = currentMembership.MembershipId,
-                            DisplayText = $"Member: {member.Email} - Plan: {currentMembership.Plan?.Name ?? "Unknown"} ({currentMembership.StartDate:dd/MM/yyyy} - {currentMembership.EndDate:dd/MM/yyyy})"
+                            DisplayText = $"{currentMembership.Plan?.Name ?? "Unknown"} ({currentMembership.StartDate:dd/MM/yyyy} - {currentMembership.EndDate:dd/MM/yyyy})"
                         });
                     }
                 }

@@ -105,4 +105,14 @@ public class TrainerAssignmentRepository: ITrainerAssignmentRepository
             .ToListAsync();
     }
 
+    public async Task<TrainerAssignment> GetExistingAssignmentAsync(int memberId, int trainerId, int membershipId)
+    {
+        return await _context.TrainerAssignments
+            .FirstOrDefaultAsync(ta =>
+                ta.MemberId == memberId &&
+                ta.TrainerId == trainerId &&
+                ta.MembershipId == membershipId &&
+                (bool)ta.IsActive);
+    }
+
 }
