@@ -2,7 +2,7 @@
 @model GymMaster_RazorPages.Pages.MembershipPlan.CreateModel
 
 @{
-    ViewData["Title"] = "Tạo gói tập mới";
+    ViewData["Title"] = "Create New Membership Plan";
 }
 
 <style>
@@ -10,25 +10,31 @@
         font-family: 'Roboto', sans-serif;
         background-color: #f8f9fa;
     }
+
     .card {
         border-radius: 1rem;
         box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     }
+
     .card-header {
         font-size: 1.25rem;
         font-weight: 600;
     }
+
     .form-label {
         font-weight: 500;
     }
+
     .btn-primary {
         border-radius: 0.5rem;
         padding: 0.75rem 1.5rem;
         transition: background-color 0.3s;
     }
-    .btn-primary:hover {
-        background-color: #0056b3;
-    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
     .btn-outline-secondary {
         border-radius: 0.5rem;
         padding: 0.75rem 1.5rem;
@@ -40,7 +46,7 @@
         <div class="col-lg-7">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <i class="bi bi-plus-circle me-2"></i> Tạo gói tập mới
+                    <i class="bi bi-plus-circle me-2"></i> Create New Membership Plan
                 </div>
                 <div class="card-body">
                     @if (!string.IsNullOrEmpty(Model.StatusMessage))
@@ -51,34 +57,34 @@
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                         <div class="mb-3">
-                            <label asp-for="MembershipPlan.Name" class="form-label"><i class="bi bi-card-text"></i> Tên gói</label>
+                            <label asp-for="MembershipPlan.Name" class="form-label"><i class="bi bi-card-text"></i> Plan Name</label>
                             <input asp-for="MembershipPlan.Name" class="form-control" />
                             <span asp-validation-for="MembershipPlan.Name" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label asp-for="MembershipPlan.Description" class="form-label"><i class="bi bi-info-circle"></i> Mô tả</label>
+                            <label asp-for="MembershipPlan.Description" class="form-label"><i class="bi bi-info-circle"></i> Description</label>
                             <textarea asp-for="MembershipPlan.Description" class="form-control" rows="3"></textarea>
                             <span asp-validation-for="MembershipPlan.Description" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label asp-for="MembershipPlan.Price" class="form-label"><i class="bi bi-cash-stack"></i> Giá (VNĐ)</label>
+                            <label asp-for="MembershipPlan.Price" class="form-label"><i class="bi bi-cash-stack"></i> Price (VND)</label>
                             <input asp-for="MembershipPlan.Price" class="form-control" type="number" min="0" step="1000" />
                             <span asp-validation-for="MembershipPlan.Price" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label asp-for="MembershipPlan.IsActive" class="form-label"><i class="bi bi-toggle-on"></i> Trạng thái</label>
+                            <label asp-for="MembershipPlan.IsActive" class="form-label"><i class="bi bi-toggle-on"></i> Status</label>
                             <select asp-for="MembershipPlan.IsActive" class="form-select">
-                                <option value="true">Kích hoạt</option>
-                                <option value="false">Không kích hoạt</option>
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
                             </select>
                             <span asp-validation-for="MembershipPlan.IsActive" class="text-danger"></span>
                         </div>
                         <div class="text-end">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-plus-circle"></i> Tạo mới
+                                <i class="bi bi-plus-circle"></i> Create
                             </button>
                             <a asp-page="Index" class="btn btn-outline-secondary ms-2">
-                                <i class="bi bi-arrow-left-circle"></i> Quay lại
+                                <i class="bi bi-arrow-left-circle"></i> Back
                             </a>
                         </div>
                     </form>

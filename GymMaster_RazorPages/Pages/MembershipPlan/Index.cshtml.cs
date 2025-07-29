@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 using MSSQLServer.EntitiesModels;
 using Services.Services;
 
 namespace GymMaster_RazorPages.Pages.MembershipPlan
 {
-    // If needed, apply [Authorize(Roles = "Admin")] or similar
+    [Authorize] // Require authentication for this page
     public class IndexModel : PageModel
     {
         private readonly IMembershipPlanService _membershipPlanService;
@@ -40,7 +41,7 @@ namespace GymMaster_RazorPages.Pages.MembershipPlan
 
         [BindProperty(SupportsGet = true)]
         public bool? ActiveOnly { get; set; }
-        
+
         public string NameSort { get; set; }
         public string PriceSort { get; set; }
         public string DateSort { get; set; }
@@ -51,11 +52,15 @@ namespace GymMaster_RazorPages.Pages.MembershipPlan
 
         [TempData]
         public string StatusMessage { get; set; }
-        
+
         // Summary statistics
         public int TotalPlans { get; set; }
         public int ActivePlans { get; set; }
         public decimal AveragePrice { get; set; }
+
+        // Properties to check user roles
+        public bool IsAdmin => User.IsInRole("Admin");
+        public bool IsMember => User.IsInRole("Member");
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -80,6 +85,12 @@ namespace GymMaster_RazorPages.Pages.MembershipPlan
 
                 // Apply Active filter if requested
                 if (ActiveOnly == true)
+                {
+                    plans = plans.Where(p => p.IsActive == true);
+                }
+
+                // If user is Member, only show active plans
+                if (IsMember && !IsAdmin)
                 {
                     plans = plans.Where(p => p.IsActive == true);
                 }
@@ -123,13 +134,29 @@ namespace GymMaster_RazorPages.Pages.MembershipPlan
             }
         }
 
-        //public async Task<IActionResult> OnPostSelectPlanAsync(int planId)
-        //{
-        //    var plan = await _membershipPlanService.GetByIdAsync(planId);
+        // Handler for Member role to select a plan
+        [Authorize(Roles = "Member")]
+        public async Task<IActionResult> OnPostSelectPlanAsync(int planId)
+        {
+            try
+            {
+                var plan = await _membershipPlanService.GetByIdAsync(planId);
+                if (plan == null)
+                {
+                    StatusMessage = "Error: Plan not found.";
+                    return RedirectToPage();
+                }
 
-        //}
-
-
+                // Redirect to select page with planId
+                return RedirectToPage("/MembershipPlan/Select", new { planId = planId });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error selecting membership plan");
+                StatusMessage = "Error: Failed to select membership plan.";
+                return RedirectToPage();
+            }
+        }
     }
 
     // Pagination helper class remains unchanged
