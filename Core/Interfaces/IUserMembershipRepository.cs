@@ -16,6 +16,7 @@ namespace Core.Interfaces
          Task<UserMembership> AddAsync(UserMembership user);
         Task<UserMembership> UpdateAsync(UserMembership user);
         Task<bool> DeleteAsync(int id);
+        Task<List<UserMembership>> GetMembershipsByUserIdAsync(int userId);
 
         Task<UserMembership> GetCurrentMembershipAsync(int userId);
     }

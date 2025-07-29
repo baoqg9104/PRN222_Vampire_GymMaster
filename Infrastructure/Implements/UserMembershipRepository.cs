@@ -19,6 +19,17 @@ namespace Infrastructure.Implements
             _context = context;
         }
 
+        public async Task<List<UserMembership>> GetMembershipsByUserIdAsync(int userId)
+        {
+            return await _context.UserMemberships
+                .Include(um => um.Plan) // Include the related Plan data
+                .Include(um => um.TrainerAssignments) // Include any trainer assignments
+                    .ThenInclude(ta => ta.Trainer) // Include trainer details for each assignment
+                .Where(um => um.UserId == userId) // Filter by user ID
+                .OrderByDescending(um => um.StartDate) // Show most recent memberships first
+                .ToListAsync();
+        }
+
         public async Task<UserMembership> AddAsync(UserMembership userMem)
         {
             if (userMem == null)

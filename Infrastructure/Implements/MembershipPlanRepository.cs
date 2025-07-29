@@ -85,4 +85,5 @@ public class MembershipPlanRepository : IMembershipPlanRepository
         return await _context.MembershipPlans
             .CountAsync(p => p.IsActive == true);
     }
+ 
 }

@@ -1,9 +1,8 @@
-﻿@page  
+﻿@page
 @model GymMaster_RazorPages.Pages.Dashboard.MemberDashboardModel
 @{
     ViewData["Title"] = "Member Dashboard";
 }
- 
 
 <div class="container">
     <div class="row">
@@ -64,6 +63,88 @@
         <div class="col-md-8">
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
+                    <h5>Your Membership Plans</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.MemberMemberships != null && Model.MemberMemberships.Any())
+                    {
+                        <div class="accordion" id="membershipAccordion">
+                            @foreach (var membership in Model.MemberMemberships)
+                            {
+                                var isActive = membership.StartDate <= DateOnly.FromDateTime(DateTime.Today) &&
+                                (membership.EndDate >= DateOnly.FromDateTime(DateTime.Today));
+                                var isFuture = membership.StartDate > DateOnly.FromDateTime(DateTime.Today);
+
+                                <div class="accordion-item mb-2">
+                                    <h2 class="accordion-header" id="heading-@membership.MembershipId">
+                                        <button class="accordion-button @(isActive ? "" : "collapsed")" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#collapse-@membership.MembershipId"
+                                                aria-expanded="@(isActive ? "true" : "false")"
+                                                aria-controls="collapse-@membership.MembershipId">
+                                            <div class="d-flex justify-content-between w-100">
+                                                <div>
+                                                    <strong>@membership.Plan.Name</strong>
+                                                    @if (isActive)
+                                                    {
+                                                        <span class="badge bg-success ms-2">Active</span>
+                                                    }
+                                                    else if (isFuture)
+                                                    {
+                                                        <span class="badge bg-info ms-2">Upcoming</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-secondary ms-2">Expired</span>
+                                                    }
+                                                </div>
+                                                <div class="text-muted small">
+                                                    @membership.StartDate.ToString("dd/MM/yyyy") - @membership.EndDate.ToString("dd/MM/yyyy")
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse-@membership.MembershipId"
+                                         class="accordion-collapse collapse @(isActive ? "show" : "")"
+                                         aria-labelledby="heading-@membership.MembershipId"
+                                         data-bs-parent="#membershipAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <p><strong>Plan Type:</strong> @membership.Plan.Name</p>
+                                                    <p><strong>Start Date:</strong> @membership.StartDate.ToString("dd/MM/yyyy")</p>
+                                                    <p><strong>End Date:</strong> @membership.EndDate.ToString("dd/MM/yyyy")</p>
+                                                    @{
+                                                        var daysLeft = (membership.EndDate.ToDateTime(TimeOnly.MinValue) - DateTime.Today).Days;
+                                                    }
+                                                    @if (daysLeft > 0 && isActive)
+                                                    {
+                                                        <p><strong>Days Remaining:</strong> <span class="badge bg-primary">@daysLeft</span></p>
+                                                    }
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p><strong>Description:</strong> @membership.Plan.Description</p>
+                                                    <p><strong>Price:</strong> @membership.Plan.Price.ToString("C")</p>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            You have not registered for any membership plan yet.
+                            <a asp-page="/MembershipPlan/Index" class="alert-link">Subscribe now</a>
+                        </div>
+                    }
+                </div>
+            </div>
+            @* <div class="card mb-4">
+                <div class="card-header bg-info text-white">
                     <h5>Current membership plan</h5>
                 </div>
                 <div class="card-body">
@@ -90,110 +171,121 @@
                         </div>
                     }
                 </div>
-            </div>
+            </div> *@
 
             <div class="card">
                 <div class="card-header bg-success text-white">
-                    <h5>Your trainer</h5>
+                    <h5>Your Trainers by Membership Plan</h5>
                 </div>
                 <div class="card-body">
-                    @if (Model.ActiveTrainerAssignments != null && Model.ActiveTrainerAssignments.Any())
+                    @if (Model.TrainersByMembership != null && Model.TrainersByMembership.Any())
                     {
-                        @foreach (var assignment in Model.ActiveTrainerAssignments)
-                        {
-                            var today = DateOnly.FromDateTime(DateTime.Today);
-                            var isActive = assignment.StartDate <= today && (assignment.EndDate == null || assignment.EndDate >= today);
-                            var isFuture = assignment.StartDate > today;
+                        <div class="accordion" id="trainersAccordion">
+                            @foreach (var membershipGroup in Model.TrainersByMembership)
+                            {
+                                var membership = membershipGroup.Value.First().Membership;
+                                var plan = membership?.Plan;
+                                var today = DateOnly.FromDateTime(DateTime.Today);
 
-                            <div class="trainer-assignment mb-4 p-3 border rounded @(isActive ? "border-success" : (isFuture ? "border-info" : "border-secondary"))">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="trainer-avatar @(isActive ? "bg-success" : (isFuture ? "bg-info" : "bg-secondary")) text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                            <i class="fas fa-user fa-2x"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <h5 class="mb-1">@assignment.Trainer.FirstName @assignment.Trainer.LastName</h5>
-                                                <p class="mb-1 text-muted">@assignment.Trainer.Email</p>
-                                                @if (!string.IsNullOrEmpty(assignment.Trainer.Specialization))
-                                                {
-                                                    <p class="mb-1"><strong>Specialization:</strong> @assignment.Trainer.Specialization</p>
-                                                }
-                                                @if (!string.IsNullOrEmpty(assignment.Trainer.Certification))
-                                                {
-                                                    <p class="mb-1"><strong>Certification:</strong> @assignment.Trainer.Certification</p>
-                                                }
-                                                @if (!string.IsNullOrEmpty(assignment.Goals))
-                                                {
-                                                    <p class="mb-1"><strong>Goals:</strong> @assignment.Goals</p>
-                                                }
-                                            </div>
-                                            <div class="col-md-4 text-end">
-                                                <div class="assignment-dates">
-                                                    <p class="mb-1 text-primary">
-                                                        <i class="fas fa-play-circle"></i>
-                                                        <strong>Start date:</strong><br>
-                                                        <small>@assignment.StartDate.ToString("dd/MM/yyyy")</small>
-                                                    </p>
-                                                    @if (assignment.EndDate.HasValue)
-                                                    {
-                                                        <p class="mb-1 text-warning">
-                                                            <i class="fas fa-stop-circle"></i>
-                                                            <strong>End date:</strong><br>
-                                                            <small>@assignment.EndDate.Value.ToString("dd/MM/yyyy")</small>
-                                                        </p>
-                                                        var daysLeft = (assignment.EndDate.Value.ToDateTime(TimeOnly.MinValue) - DateTime.Today).Days;
-                                                        @if (daysLeft > 0)
-                                                        {
-                                                            <span class="badge bg-info">@daysLeft days left</span>
-                                                        }
-                                                        else if (daysLeft == 0)
-                                                        {
-                                                            <span class="badge bg-warning">Expires today</span>
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        <p class="mb-1 text-info">
-                                                            <i class="fas fa-infinity"></i>
-                                                            <strong>Duration:</strong><br>
-                                                            <small>Unlimited</small>
-                                                        </p>
-                                                    }
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header" id="heading-@membership.MembershipId">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapse-@membership.MembershipId"
+                                                aria-expanded="true"
+                                                aria-controls="collapse-@membership.MembershipId">
+                                            <i class="fas fa-id-card me-2"></i>
+                                            <strong>@plan?.Name</strong>
+                                            <span class="badge bg-primary ms-2">@membershipGroup.Value.Count trainer(s)</span>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse-@membership.MembershipId" class="accordion-collapse collapse show"
+                                         aria-labelledby="heading-@membership.MembershipId"
+                                         data-bs-parent="#trainersAccordion">
+                                        <div class="accordion-body p-0">
+                                            @foreach (var assignment in membershipGroup.Value)
+                                            {
+                                                var isActive = assignment.StartDate <= today && (assignment.EndDate == null || assignment.EndDate >= today);
+                                                var isFuture = assignment.StartDate > today;
 
-                                                    @* Hiển thị trạng thái *@
-                                                    @if (isActive)
-                                                    {
-                                                        <span class="badge bg-success">Active</span>
-                                                    }
-                                                    else if (isFuture)
-                                                    {
-                                                        <span class="badge bg-info">Coming Soon</span>
-                                                    }
+                                                <div class="trainer-assignment p-3 border-bottom @(isActive ? "border-success bg-light" : (isFuture ? "border-info bg-light" : "border-secondary"))">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-shrink-0">
+                                                            <div class="trainer-avatar @(isActive ? "bg-success" : (isFuture ? "bg-info" : "bg-secondary")) text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                                <i class="fas fa-user"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-grow-1 ms-3">
+                                                            <div class="row">
+                                                                <div class="col-md-8">
+                                                                    <h6 class="mb-1">@assignment.Trainer.FirstName @assignment.Trainer.LastName</h6>
+                                                                    <p class="mb-1 small text-muted">@assignment.Trainer.Email</p>
+                                                                    @if (!string.IsNullOrEmpty(assignment.Trainer.Specialization))
+                                                                    {
+                                                                        <p class="mb-1 small"><strong>Specialization:</strong> @assignment.Trainer.Specialization</p>
+                                                                    }
+                                                                    @if (!string.IsNullOrEmpty(assignment.Trainer.Certification))
+                                                                    {
+                                                                        <p class="mb-1 small"><strong>Certification:</strong> @assignment.Trainer.Certification</p>
+                                                                    }
+                                                                    @if (!string.IsNullOrEmpty(assignment.Goals))
+                                                                    {
+                                                                        <p class="mb-1 small"><strong>Goals:</strong> @assignment.Goals</p>
+                                                                    }
+                                                                </div>
+                                                                <div class="col-md-4 text-end">
+                                                                    <div class="assignment-dates small">
+                                                                        <p class="mb-1 text-primary">
+                                                                            <i class="fas fa-play-circle"></i>
+                                                                            <strong>Start:</strong> @assignment.StartDate.ToString("dd/MM/yyyy")
+                                                                        </p>
+                                                                        @if (assignment.EndDate.HasValue)
+                                                                        {
+                                                                            <p class="mb-1 text-warning">
+                                                                                <i class="fas fa-stop-circle"></i>
+                                                                                <strong>End:</strong> @assignment.EndDate.Value.ToString("dd/MM/yyyy")
+                                                                            </p>
+                                                                            var daysLeft = (assignment.EndDate.Value.ToDateTime(TimeOnly.MinValue) - DateTime.Today).Days;
+                                                                            @if (daysLeft > 0)
+                                                                            {
+                                                                                <span class="badge bg-info">@daysLeft days left</span>
+                                                                            }
+                                                                            else if (daysLeft == 0)
+                                                                            {
+                                                                                <span class="badge bg-warning">Expires today</span>
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <p class="mb-1 text-info">
+                                                                                <i class="fas fa-infinity"></i>
+                                                                                <strong>Duration:</strong> Ongoing
+                                                                            </p>
+                                                                        }
+                                                                        @if (isActive)
+                                                                        {
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        }
+                                                                        else if (isFuture)
+                                                                        {
+                                                                            <span class="badge bg-info">Coming Soon</span>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="mt-2">
-                                            <a asp-page="/Trainer/Details" asp-route-id="@assignment.Trainer.UserId"
-                                               class="btn btn-sm btn-outline-success me-2">
-                                                <i class="fas fa-eye"></i> View details
-                                            </a>
-                                            <small class="text-muted">
-                                                <i class="fas fa-id-card"></i>
-                                                Gói: @assignment.Membership?.Plan?.Name
-                                            </small>
+                                            }
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
+                            }
+                        </div>
                     }
                     else
                     {
                         <div class="alert alert-warning">
-                            You have not been assigned a trainer yet.
+                            You have not been assigned any trainers yet.
                             <a asp-page="/TrainerAssignments/Create" asp-route-memberId="@Model.CurrentUser.UserId" class="alert-link">Request Now</a>
                         </div>
                     }
@@ -203,10 +295,25 @@
     </div>
 </div>
 
-@* <form method="post" asp-page="/Account/Logout"> *@
-@*     <button type="submit" class="btn btn-danger">Logout</button> *@
-@* </form> *@
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Initialize accordion to only show one panel at a time
+        document.addEventListener('DOMContentLoaded', function() {
+            const accordionButtons = document.querySelectorAll('.accordion-button');
+            accordionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-bs-target');
+                    const targetCollapse = document.querySelector(targetId);
+
+                    // Close all other accordion items
+                    document.querySelectorAll('.accordion-collapse').forEach(collapse => {
+                        if (collapse.id !== targetId.substring(1)) {
+                            collapse.classList.remove('show');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 }
