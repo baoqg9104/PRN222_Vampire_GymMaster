@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -5,6 +6,8 @@ using MSSQLServer.EntitiesModels;
 
 namespace GymMaster_RazorPages.Pages.WorkoutSessions
 {
+    [Authorize(Roles = "Trainer")]
+
     public class ClientProgressModel : PageModel
     {
         private readonly GymManagementContext _context;

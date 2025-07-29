@@ -1,13 +1,16 @@
-using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Services.Services;
+using System.Security.Claims;
 
 namespace GymMaster_RazorPages.Pages.MembershipPlan;
 
+[Authorize(Roles = "Member,Admin")]
 public class SelectModel : PageModel
 {
+
     private readonly IMembershipPlanService _membershipPlanService;
     private readonly IUserMembershipService _userMembershipService;
 

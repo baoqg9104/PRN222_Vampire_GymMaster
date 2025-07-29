@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using MSSQLServer.EntitiesModels;
@@ -7,6 +8,7 @@ using System.Security.Claims;
 
 namespace GymMaster_RazorPages.Pages.Dashboard
 {
+    [Authorize(Roles = "Member")]
     public class MemberDashboardModel : PageModel
     {
         private readonly IUserService _userService;
