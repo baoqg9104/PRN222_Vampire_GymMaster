@@ -14,12 +14,14 @@ namespace GymMaster_RazorPages.Pages.MembershipPlan
     public class IndexModel : PageModel
     {
         private readonly IMembershipPlanService _membershipPlanService;
+        private readonly IUserMembershipService _userMembershipService;
         private readonly ILogger<IndexModel> _logger;
 
-        public IndexModel(IMembershipPlanService membershipPlanService, ILogger<IndexModel> logger)
+        public IndexModel(IMembershipPlanService membershipPlanService, ILogger<IndexModel> logger, IUserMembershipService userMembershipService)
         {
             _membershipPlanService = membershipPlanService;
             _logger = logger;
+            _userMembershipService = userMembershipService;
         }
 
         public IList<MSSQLServer.EntitiesModels.MembershipPlan> MembershipPlans { get; set; } = new List<MSSQLServer.EntitiesModels.MembershipPlan>();
@@ -120,6 +122,14 @@ namespace GymMaster_RazorPages.Pages.MembershipPlan
                 return Page();
             }
         }
+
+        //public async Task<IActionResult> OnPostSelectPlanAsync(int planId)
+        //{
+        //    var plan = await _membershipPlanService.GetByIdAsync(planId);
+
+        //}
+
+
     }
 
     // Pagination helper class remains unchanged
