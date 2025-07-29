@@ -16,5 +16,6 @@ public interface ITrainerAssignmentRepository
     Task<TrainerAssignment> UpdateAsync(TrainerAssignment trainerAssignment);
     Task<bool> DeleteAsync(int id);
     Task<User> GetCurrentTrainerAsync(int userId);
+    Task<List<TrainerAssignment>> GetActiveTrainerAssignmentsByMemberIdAsync(int memberId); 
 
 }

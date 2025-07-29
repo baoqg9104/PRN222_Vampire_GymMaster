@@ -46,4 +46,9 @@ public class TrainerAssignmentService : ITrainerAssignmentService
     {
         return _trainerAssignmentService.GetCurrentTrainerAsync(userId);
     }
+
+    public Task<List<TrainerAssignment>> GetActiveTrainerAssignmentsByMemberIdAsync(int memberId)
+    {
+        return _trainerAssignmentService.GetActiveTrainerAssignmentsByMemberIdAsync(memberId);
+    }
 }
