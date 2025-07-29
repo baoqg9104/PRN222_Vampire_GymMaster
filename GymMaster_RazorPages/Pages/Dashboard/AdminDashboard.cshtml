@@ -35,11 +35,11 @@
 
     <!-- Statistics Section -->
     <div class="row mb-4">
-        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+        <div class="col-md-3 mb-3 mb-md-0">
             <div class="card bg-light h-100">
                 <div class="card-body text-center">
                     <div class="display-4 text-primary mb-2">@Model.TotalUsers</div>
-                    <h6 class="card-title">Total Users</h6>
+                    <h5 class="card-title">Total Users</h5>
                     <p class="small text-muted mb-0">
                         <span class="badge bg-success me-1">@Model.TrainerCount Trainers</span>
                         <span class="badge bg-info">@Model.MemberCount Members</span>
@@ -47,33 +47,33 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+        <div class="col-md-3 mb-3 mb-md-0">
             <div class="card bg-light h-100">
                 <div class="card-body text-center">
                     <div class="display-4 text-success mb-2">@Model.ActiveMemberships</div>
-                    <h6 class="card-title">Active Memberships</h6>
+                    <h5 class="card-title">Active Memberships</h5>
                     <p class="small text-muted mb-0">
                         <i class="fas fa-id-card me-1"></i> @Model.TotalMembershipPlans plans
                     </p>
                 </div>
             </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+        <div class="col-md-3 mb-3 mb-md-0">
             <div class="card bg-light h-100">
                 <div class="card-body text-center">
                     <div class="display-4 text-info mb-2">@Model.TotalBlogPosts</div>
-                    <h6 class="card-title">Blog Posts</h6>
+                    <h5 class="card-title">Blog Posts</h5>
                     <p class="small text-muted mb-0">
                         <i class="fas fa-newspaper me-1"></i> Content engagement
                     </p>
                 </div>
             </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+        <div class="col-md-3 mb-3 mb-md-0">
             <div class="card bg-light h-100">
                 <div class="card-body text-center">
                     <div class="display-4 text-warning mb-2">@Model.NewUsersThisMonth</div>
-                    <h6 class="card-title">New Users</h6>
+                    <h5 class="card-title">New Users</h5>
                     <p class="small text-muted mb-0">
                         <i class="fas fa-user-plus me-1"></i> This month
                     </p>
@@ -91,29 +91,34 @@
                 </div>
                 <div class="card-body">
                     <div class="row g-2">
-                        <div class="col-lg-2 col-md-4 col-sm-6">
+                        <div class="col-md-3">
                             <a asp-page="/Account/Create" class="btn btn-outline-primary w-100">
                                 <i class="fas fa-user-plus me-2"></i>New User
                             </a>
                         </div>
-                        <div class="col-lg-2 col-md-4 col-sm-6">
+                        <div class="col-md-3">
+                            <a asp-page="/UserMember/Index" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-users me-2"></i>Members
+                            </a>
+                        </div>
+                        <div class="col-md-3">
                             <a asp-page="/MembershipPlan/Create" class="btn btn-outline-success w-100">
                                 <i class="fas fa-plus-circle me-2"></i>New Plan
                             </a>
                         </div>
-                        <div class="col-lg-2 col-md-4 col-sm-6">
+                        <div class="col-md-3">
                             <a asp-page="/BlogPost/Create" class="btn btn-outline-info w-100">
                                 <i class="fas fa-pen me-2"></i>New Blog Post
                             </a>
                         </div>
-                        <div class="col-lg-2 col-md-4 col-sm-6">
-                            <a asp-page="/TrainerAssignments/Create" class="btn btn-outline-warning w-100">
+                        <div class="col-md-3">
+                            <a asp-page="/TrainerAssignment/Create" class="btn btn-outline-warning w-100">
                                 <i class="fas fa-dumbbell me-2"></i>New Assignment
                             </a>
                         </div>
-                        <div class="col-lg-2 col-md-4 col-sm-6">
-                            <a asp-page="/TrainerAssignments/Create" class="btn btn-outline-secondary w-100">
-                                <i class="fas fa-list me-2"></i>New Assignments
+                        <div class="col-md-3">
+                            <a asp-page="/TrainerAssignment/Index" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-list me-2"></i>View Assignments
                             </a>
                         </div>
                     </div>
@@ -137,6 +142,24 @@
                 <div class="card-footer bg-transparent border-0">
                     <a asp-page="/Account/Index" class="btn btn-primary w-100 text-white">
                         <i class="fas fa-cog me-2"></i>Manage Users
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage Members -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="display-4 mb-3 text-primary">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <h5 class="card-title">Members</h5>
+                    <p class="card-text">Manage gym members, their profiles, and membership details.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a asp-page="/UserMember/Index" class="btn btn-primary w-100 text-white">
+                        <i class="fas fa-cog me-2"></i>Manage Members
                     </a>
                 </div>
             </div>
@@ -189,13 +212,11 @@
                     <p class="card-text">Assign trainers to members and manage workout schedules effectively.</p>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <a asp-page="/TrainerAssignments/Index" class="btn btn-warning w-100 text-white">
+                    <a asp-page="/TrainerAssignment/Index" class="btn btn-warning w-100 text-white">
                         <i class="fas fa-cog me-2"></i>Manage Assignments
                     </a>
                 </div>
             </div>
         </div>
     </div>
-
-
 </div>
