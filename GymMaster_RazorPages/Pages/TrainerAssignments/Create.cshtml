@@ -181,7 +181,14 @@
         <div class="col-lg-8 col-md-10">
             <div class="form-container">
                 <form method="post">
-                    <div asp-validation-summary="All" class="validation-summary-errors text-danger"></div>
+                    @* <div asp-validation-summary="All" class="validation-summary-errors text-danger"></div> *@
+                    <div asp-validation-summary="All" class="validation-summary-errors text-danger">
+                        @if (ModelState.ErrorCount > 0)
+                        {
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>@(Model.IsAdmin ? "Please fix the following errors:" : "Vui lòng sửa các lỗi sau:")</strong>
+                        }
+                    </div>
 
                     <div class="row">
                         <div class="col-md-6">
@@ -209,7 +216,7 @@
                             <div class="form-group">
                                 <label asp-for="TrainerId" class="form-label">
                                     <i class="fas fa-dumbbell"></i>
-                                    @(Model.IsAdmin ? "Trainer" : "Huấn luyện viên mong muốn")
+                                    @(Model.IsAdmin ? "Traine   r" : "Huấn luyện viên mong muốn")
                                 </label>
                                 <select asp-for="TrainerId" class="form-control form-select" asp-items="ViewBag.TrainerId">
                                     <option value="">@(Model.IsAdmin ? "-- Select a Trainer --" : "-- Chọn huấn luyện viên --")</option>
@@ -299,7 +306,24 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        $(document).ready(function() {
+            // Client-side validation for dates
+            $('#EndDate').change(function() {
+                const startDate = $('#StartDate').val();
+                const endDate = $(this).val();
+
+                if (startDate && endDate && new Date(endDate) <= new Date(startDate)) {
+                    $('[data-valmsg-for="EndDate"]').text('@(Model.IsAdmin ? "End Date must be after Start Date" : "Ngày kết thúc phải sau ngày bắt đầu")');
+                } else {
+                    $('[data-valmsg-for="EndDate"]').text('');
+                }
+            });
+        });
+    </script>
 }
 
 <!-- Add Font Awesome for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+

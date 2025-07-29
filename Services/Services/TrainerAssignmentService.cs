@@ -51,4 +51,9 @@ public class TrainerAssignmentService : ITrainerAssignmentService
     {
         return _trainerAssignmentService.GetActiveTrainerAssignmentsByMemberIdAsync(memberId);
     }
+
+    public Task<TrainerAssignment> GetExistingAssignmentAsync(int memberId, int trainerId, int membershipId)
+    {
+        return _trainerAssignmentService.GetExistingAssignmentAsync(memberId,trainerId,membershipId);
+    }
 }

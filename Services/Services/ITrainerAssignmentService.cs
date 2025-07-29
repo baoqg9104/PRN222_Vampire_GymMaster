@@ -18,5 +18,6 @@ public interface ITrainerAssignmentService
     Task<User> GetCurrentTrainerAsync(int userId);
     Task<List<TrainerAssignment>> GetActiveTrainerAssignmentsByMemberIdAsync(int memberId);
 
+    Task<TrainerAssignment> GetExistingAssignmentAsync(int memberId, int trainerId, int membershipId);
 
 }
