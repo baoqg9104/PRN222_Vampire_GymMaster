@@ -1,4 +1,5 @@
 ﻿using Core.Interfaces;
+using Core.Response;
 using MSSQLServer.EntitiesModels;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,11 @@ namespace Services.Services
         public Task<UserMembership> GetCurrentMembershipAsync(int userId)
         {
             return _userMembershipRepository.GetCurrentMembershipAsync(userId);
+        }
+
+        public async Task<UserMembershipResponse> GetListAsync(string? searchTypeName, DateOnly? assignment, int pageIndex, int pageSize)
+        {
+            return await _userMembershipRepository.GetListAsync(searchTypeName, assignment, pageIndex, pageSize);
         }
 
         public async Task<UserMembership> UpdateAsync(UserMembership user)

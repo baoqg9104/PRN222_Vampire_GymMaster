@@ -1,4 +1,5 @@
 ﻿using Core.Interfaces;
+using Core.Response;
 using Microsoft.EntityFrameworkCore;
 using MSSQLServer.EntitiesModels;
 using System;
@@ -50,7 +51,9 @@ namespace Infrastructure.Implements
         public async Task<UserMembership?> GetByIdAsync(int id)
         {
             return await _context.UserMemberships
-            .FirstOrDefaultAsync(bp => bp.MembershipId == id);
+                        .Include(bm => bm.Plan)
+                        .Include(bm => bm.User)
+                        .FirstOrDefaultAsync(bp => bp.MembershipId == id);
         }
 
         public async Task<UserMembership> UpdateAsync(UserMembership user)
@@ -71,6 +74,37 @@ namespace Infrastructure.Implements
                 .Where(um => um.UserId == userId)
                 .OrderByDescending(um => um.StartDate)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<UserMembershipResponse> GetListAsync(string? searchTypeName, DateOnly? assignment, int pageIndex, int pageSize)
+        {
+            var query = _context.UserMemberships.Include(p => p.Plan).Include(p => p.User).AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTypeName))
+            {
+                query = query.Where(p => p.Plan.Name.Contains(searchTypeName));
+            }
+
+            if (assignment.HasValue)
+            {
+                query = query.Where(p => p.StartDate== assignment.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            var plan = await query
+                .OrderByDescending(p => p.MembershipId) // Optional: sort mới nhất lên đầu
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new UserMembershipResponse
+            {
+                UserMembership = plan,
+                TotalPages = totalPages,
+                PageIndex = pageIndex
+            };
         }
     }
 }
