@@ -33,6 +33,7 @@
                                 <th>Planned</th>
                                 <th>Completed</th>
                                 <th>Notes</th>
+                                <th>Actions</th> <!-- New column -->
                             </tr>
                         </thead>
                         <tbody>
@@ -45,6 +46,20 @@
                                     <td>@item.Plan.Sets × @item.Plan.Reps</td>
                                     <td>@item.Session.ActualSets × @item.Session.ActualReps</td>
                                     <td>@item.Session.Notes</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a asp-page="/WorkoutSessions/Edit"
+                                               asp-route-id="@item.Session.SessionId"
+                                               class="btn btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-page="/WorkoutSessions/Delete"
+                                               asp-route-id="@item.Session.SessionId"
+                                               class="btn btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
