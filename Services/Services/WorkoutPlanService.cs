@@ -47,5 +47,10 @@ namespace Services.Services
         {
             return await _workoutPlanService.UpdateAsync(workoutPlan);
         }
+
+        public async Task<IEnumerable<WorkoutPlan>> GetByMemberIdAsync(int memberId)
+        {   
+            return await _workoutPlanService.GetByMemberIdAsync(memberId);
+        }
     }
 }

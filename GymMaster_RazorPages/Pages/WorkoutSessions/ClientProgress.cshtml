@@ -7,6 +7,13 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Progress for @Model.Member.FirstName @Model.Member.LastName</h2>
         <a asp-page="/Trainer/TrainerDashboard" class="btn btn-secondary">Back to Dashboard</a>
+        <div class="d-flex justify-content-end mb-4">
+            <a class="btn btn-primary btn-lg rounded-pill shadow-sm"
+               asp-page="/WorkoutSessions/Create"
+               asp-route-memberId="@Model.Member.UserId">
+                <i class="bi bi-plus-circle"></i> Create New Session
+            </a>
+        </div>
     </div>
 
     @if (Model.Sessions.Any())
@@ -26,6 +33,7 @@
                                 <th>Planned</th>
                                 <th>Completed</th>
                                 <th>Notes</th>
+                                <th>Actions</th> <!-- New column -->
                             </tr>
                         </thead>
                         <tbody>
@@ -38,6 +46,20 @@
                                     <td>@item.Plan.Sets × @item.Plan.Reps</td>
                                     <td>@item.Session.ActualSets × @item.Session.ActualReps</td>
                                     <td>@item.Session.Notes</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a asp-page="/WorkoutSessions/Edit"
+                                               asp-route-id="@item.Session.SessionId"
+                                               class="btn btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-page="/WorkoutSessions/Delete"
+                                               asp-route-id="@item.Session.SessionId"
+                                               class="btn btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
                                 </tr>
                             }
                         </tbody>

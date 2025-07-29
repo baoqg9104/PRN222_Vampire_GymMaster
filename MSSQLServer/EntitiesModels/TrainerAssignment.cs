@@ -28,4 +28,7 @@ public partial class TrainerAssignment
     public virtual User Trainer { get; set; } = null!;
 
     public virtual ICollection<WorkoutPlan> WorkoutPlans { get; set; } = new List<WorkoutPlan>();
+
+    public string DisplayName =>
+        $"{Member?.FirstName} {Member?.LastName} (Assignment #{AssignmentId})";
 }

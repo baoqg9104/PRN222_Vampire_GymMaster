@@ -17,5 +17,7 @@ namespace Services.Services
         Task<WorkoutPlan> AddAsync(WorkoutPlan workoutPlan);
         Task<WorkoutPlan> UpdateAsync(WorkoutPlan workoutPlan);
         Task<bool> DeleteAsync(int id);
-    }
+        Task<IEnumerable<WorkoutPlan>> GetByMemberIdAsync(int memberId);
+
+     }
 }

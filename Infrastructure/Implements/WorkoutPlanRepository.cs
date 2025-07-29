@@ -29,14 +29,32 @@ namespace Infrastructure.Implements
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var workoutPlan = await GetByIdAsync(id);
-            if (workoutPlan == null)
+            var plan = await _context.WorkoutPlans
+        .Include(p => p.WorkoutSessions)
+        .FirstOrDefaultAsync(p => p.PlanId == id);
+
+            if (plan == null)
             {
                 return false;
             }
-            _context.WorkoutPlans.Remove(workoutPlan);
+
+            // First delete all related sessions
+            _context.WorkoutSessions.RemoveRange(plan.WorkoutSessions);
+
+            // Then delete the plan
+            _context.WorkoutPlans.Remove(plan);
+
             await _context.SaveChangesAsync();
             return true;
+
+            //var workoutPlan = await GetByIdAsync(id);
+            //if (workoutPlan == null)
+            //{
+            //    return false;
+            //}
+            //_context.WorkoutPlans.Remove(workoutPlan);
+            //await _context.SaveChangesAsync();
+            //return true;
         }
 
         public async Task<IEnumerable<WorkoutPlan>> GetAllAsync()
@@ -98,6 +116,15 @@ namespace Infrastructure.Implements
             _context.Entry(workoutPlan).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return workoutPlan;
+        }
+
+        // WorkoutPlanRepository.cs
+        public async Task<IEnumerable<WorkoutPlan>> GetByMemberIdAsync(int memberId)
+        {
+            return await _context.WorkoutPlans
+                .Include(wp => wp.Assignment)
+                .Where(wp => wp.Assignment.MemberId == memberId)
+                .ToListAsync();
         }
     }
 }

@@ -56,6 +56,7 @@ public class TrainerAssignmentRepository: ITrainerAssignmentRepository
     {
         return await _context.TrainerAssignments
            .Include(bm => bm.WorkoutPlans)
+           .Include(a => a.Member)
            .ToListAsync();
     }
 
