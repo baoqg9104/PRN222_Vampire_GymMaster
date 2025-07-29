@@ -63,7 +63,7 @@ namespace GymMaster_RazorPages.Pages.WorkoutPlans
                 return NotFound(); // or return custom error page
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("/Dashboard/TrainerDashboard");
         }
     }
 }

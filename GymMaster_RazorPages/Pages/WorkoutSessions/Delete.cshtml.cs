@@ -55,7 +55,7 @@ namespace GymMaster_RazorPages.Pages.WorkoutSessions
                 await _workoutSessionService.DeleteAsync(WorkoutSession.SessionId);
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("/Dashboard/TrainerDashboard");
         }
     }
 }

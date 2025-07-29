@@ -67,7 +67,7 @@ namespace GymMaster_RazorPages.Pages.WorkoutSessions
                 return NotFound(); // or return custom error page
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("/Dashboard/TrainerDashboard");
         }
 
         //private bool WorkoutSessionExists(int id)

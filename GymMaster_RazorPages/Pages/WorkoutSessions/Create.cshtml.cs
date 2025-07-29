@@ -44,7 +44,7 @@ namespace GymMaster_RazorPages.Pages.WorkoutSessions
 
             await _workoutSessionService.AddAsync(WorkoutSession);
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("/Dashboard/TrainerDashboard");
         }
 
         public async Task<IActionResult> OnGet(int? memberId)
