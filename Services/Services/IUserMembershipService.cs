@@ -1,4 +1,5 @@
-﻿using MSSQLServer.EntitiesModels;
+﻿using Core.Response;
+using MSSQLServer.EntitiesModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Services.Services
     public interface IUserMembershipService
     {
         Task<IEnumerable<UserMembership>> GetAllAsync();
+        Task<UserMembershipResponse> GetListAsync(string? searchTypeName, DateOnly? assignment, int pageIndex, int pageSize);
         Task<UserMembership?> GetByIdAsync(int id);
         Task<UserMembership> AddAsync(UserMembership user);
         Task<UserMembership> UpdateAsync(UserMembership user);

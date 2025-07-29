@@ -1,0 +1,139 @@
+﻿@page
+@model GymMaster_RazorPages.Pages.UserMember.IndexModel
+
+@{
+    ViewData["Title"] = "🏷️ User Memberships";
+}
+
+<!-- Bubble Header -->
+<div id="bubble-zone" class="bubble-zone position-relative overflow-hidden py-5">
+    <h1 class="text-center text-gradient mb-4 fw-bold">
+        <i class="bi bi-people-fill text-primary"></i> 
+        User Memberships 
+        <i class="bi bi-heart-pulse text-danger"></i>
+    </h1>
+</div>
+
+<div class="container mt-5">
+
+    <!-- Create New Button -->
+    <div class="d-flex justify-content-end mb-4">
+        <a class="btn btn-success btn-lg rounded-pill shadow-sm" asp-page="Create">
+            <i class="bi bi-plus-circle"></i> Create New Membership
+        </a>
+    </div>
+
+    <!-- Search Form -->
+    <div class="card border-info mb-5 shadow-sm">
+        <div class="card-body bg-light">
+            <form class="row g-3" method="get">
+                <div class="col-md-5">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="searchTerm" name="searchTerm" placeholder="Search by Plan Name..." />
+                        <label for="searchTerm"><i class="bi bi-search"></i> Plan Name</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="date" name="date" />
+                        <label for="date"><i class="bi bi-calendar-event"></i> Start Date</label>
+                    </div>
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-info w-100 rounded-pill shadow-sm fw-bold">
+                        <i class="bi bi-search-heart"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Membership Table -->
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-info text-center">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.UserMembership[0].StartDate)</th>
+                    <th>@Html.DisplayNameFor(model => model.UserMembership[0].EndDate)</th>
+                    <th>@Html.DisplayNameFor(model => model.UserMembership[0].IsActive)</th>
+                    <th>@Html.DisplayNameFor(model => model.UserMembership[0].AutoRenew)</th>
+                    <th>@Html.DisplayNameFor(model => model.UserMembership[0].Plan.Name)</th>
+                    <th>@Html.DisplayNameFor(model => model.UserMembership[0].User.Email)</th>
+                    <th><i class="bi bi-gear"></i> Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.UserMembership)
+                {
+                    <tr>
+                        <td class="text-center">@Html.DisplayFor(m => item.StartDate)</td>
+                        <td class="text-center">@Html.DisplayFor(m => item.EndDate)</td>
+                        <td class="text-center">@Html.DisplayFor(m => item.IsActive)</td>
+                        <td class="text-center">@Html.DisplayFor(m => item.AutoRenew)</td>
+                        <td>@Html.DisplayFor(m => item.Plan.Name)</td>
+                        <td>@Html.DisplayFor(m => item.User.Email)</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a class="btn btn-outline-primary rounded-pill" asp-page="./Edit" asp-route-id="@item.MembershipId"><i class="bi bi-pencil"></i></a>
+                                <a class="btn btn-outline-success rounded-pill" asp-page="./Details" asp-route-id="@item.MembershipId"><i class="bi bi-eye"></i></a>
+                                <a class="btn btn-outline-danger rounded-pill" asp-page="./Delete" asp-route-id="@item.MembershipId"><i class="bi bi-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="mt-5">
+            <ul class="pagination pagination-lg justify-content-center">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link rounded-pill fw-semibold shadow-sm text-primary-emphasis" asp-page="./Index" asp-route-pageIndex="@i">
+                            @(i == Model.PageIndex ? "💫 " + i : "🌼 " + i)
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+
+</div>
+
+<!-- Bubble Script -->
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  const zone = document.getElementById("bubble-zone");
+  if (!zone) return;
+
+  const pastelColors = [
+    'rgba(255, 182, 193, 0.6)',
+    'rgba(173, 216, 230, 0.6)',
+    'rgba(255, 255, 153, 0.6)',
+    'rgba(204, 255, 204, 0.6)',
+    'rgba(221, 160, 221, 0.6)',
+    'rgba(255, 213, 128, 0.6)',
+    'rgba(192, 236, 243, 0.6)'
+  ];
+
+  setInterval(() => {
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.style.width = `${Math.random() * 40 + 20}px`;
+    bubble.style.height = bubble.style.width;
+    bubble.style.left = `${Math.random() * zone.offsetWidth}px`;
+    bubble.style.animationDuration = `${Math.random() * 4 + 4}s`;
+    bubble.style.position = "absolute";
+    bubble.style.bottom = "-100px";
+    bubble.style.backgroundColor = pastelColors[Math.floor(Math.random() * pastelColors.length)];
+    zone.appendChild(bubble);
+    setTimeout(() => bubble.remove(), 6000);
+  }, 500);
+});
+</script>
