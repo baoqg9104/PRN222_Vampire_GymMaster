@@ -6,6 +6,7 @@ using Services.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace GymMaster_RazorPages.Pages.WorkoutPlans
@@ -29,16 +30,21 @@ namespace GymMaster_RazorPages.Pages.WorkoutPlans
                 return NotFound();
             }
 
-            var workoutplan = await _workoutPlanService.GetByIdAsync(id.Value);
+            WorkoutPlan = await _workoutPlanService.GetByIdAsync(id.Value);
 
-            if (workoutplan is not null)
+            if (WorkoutPlan == null)
             {
-                WorkoutPlan = workoutplan;
-
-                return Page();
+                return NotFound();
             }
 
-            return NotFound();
+            // Verify the current user is the trainer who owns this plan
+            var trainerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (WorkoutPlan.Assignment.TrainerId != trainerId)
+            {
+                return Forbid();
+            }
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
@@ -48,14 +54,15 @@ namespace GymMaster_RazorPages.Pages.WorkoutPlans
                 return NotFound();
             }
 
-            var workoutplan = await _workoutPlanService.GetByIdAsync(id.Value);
-            if (workoutplan != null)
+            var plan = await _workoutPlanService.GetByIdAsync(id.Value);
+            if (plan == null)
             {
-                WorkoutPlan = workoutplan;
-                await _workoutPlanService.DeleteAsync(WorkoutPlan.PlanId);
+                return NotFound();
             }
 
-            return RedirectToPage("./Index");
+            await _workoutPlanService.DeleteAsync(id.Value);
+
+            return RedirectToPage("/Dashboard/TrainerDashboard");
         }
     }
 }

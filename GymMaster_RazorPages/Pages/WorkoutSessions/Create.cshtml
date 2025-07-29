@@ -19,11 +19,25 @@
             <form method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                <div class="mb-3">
+                @* <div class="mb-3">
                     <label asp-for="WorkoutSession.MemberId" class="form-label">
                         <i class="bi bi-person-fill"></i> Member
                     </label>
                     <select asp-for="WorkoutSession.MemberId" class="form-select" asp-items="Model.MemberList"></select>
+                </div> *@
+                <div class="mb-3">
+                    <label asp-for="WorkoutSession.MemberId" class="form-label">
+                        <i class="bi bi-person-fill"></i> Member
+                    </label>
+                    @if (Model.WorkoutSession.MemberId > 0)
+                    {
+                        <input type="hidden" asp-for="WorkoutSession.MemberId" />
+                        <input class="form-control" value="@Model.MemberList.FirstOrDefault(x => x.Value == Model.WorkoutSession.MemberId.ToString())?.Text" disabled />
+                    }
+                    else
+                    {
+                        <select asp-for="WorkoutSession.MemberId" class="form-select" asp-items="Model.MemberList"></select>
+                    }
                 </div>
 
                 <div class="mb-3">

@@ -5,6 +5,19 @@
     ViewData["Title"] = "Trainer Dashboard";
 }
 
+<style>
+    .btn-outline-danger {
+        transition: all 0.2s;
+    }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+            transform: scale(1.05);
+        }
+</style>
+    
+
 <div class="container trainer-dashboard">
     <h2 class="my-4">My Clients</h2>
 
@@ -36,7 +49,12 @@
                             <div class="mb-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h6>Workout Plans</h6>
-                                    <a asp-page="/Trainer/CreateWorkoutPlan" asp-route-assignmentId="@assignment.AssignmentId" 
+                                    @* <a asp-page="WorkoutPlans/Create" asp-route-assignmentId="@assignment.AssignmentId"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Add New Plan
+                                    </a> *@
+                                    <a asp-page="/WorkoutPlans/Create"
+                                       asp-route-assignmentId="@assignment.AssignmentId"
                                        class="btn btn-sm btn-outline-primary">
                                         Add New Plan
                                     </a>
@@ -62,8 +80,12 @@
                                                         <td>@plan.ExerciseName</td>
                                                         <td>@plan.Sets x @plan.Reps</td>
                                                         <td>
-                                                            <a asp-page="/Trainer/EditWorkoutPlan" asp-route-id="@plan.PlanId" 
+                                                        <td>
+                                                            <a asp-page="/Trainer/EditWorkoutPlan" asp-route-id="@plan.PlanId"
                                                                class="btn btn-sm btn-outline-secondary">Edit</a>
+                                                            <a asp-page="/WorkoutPlans/Delete" asp-route-id="@plan.PlanId"
+                                                               class="btn btn-sm btn-outline-danger">Delete</a>
+                                                        </td>
                                                         </td>
                                                     </tr>
                                                 }
