@@ -1,15 +1,16 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using MSSQLServer.EntitiesModels;
 using Services.Services;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GymMaster_RazorPages.Pages.MembershipPlan
 {
-    // [Authorize(Roles = "Admin")] // Uncomment if needed
+    [Authorize(Roles = "Admin")]
     public class DetailsModel : PageModel
     {
         private readonly IMembershipPlanService _membershipPlanService;

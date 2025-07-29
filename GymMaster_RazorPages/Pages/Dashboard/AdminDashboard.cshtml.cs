@@ -9,7 +9,7 @@ using Services.Services;
 namespace GymMaster_RazorPages.Pages.Dashboard
 {
     // Authorize 
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class AdminDashboardModel : PageModel
     {
         private readonly IUserService _userService;

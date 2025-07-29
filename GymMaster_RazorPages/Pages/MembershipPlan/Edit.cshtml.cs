@@ -9,7 +9,7 @@ using MSSQLServer.EntitiesModels;
 
 namespace GymMaster_RazorPages.Pages.MembershipPlan
 {
-    // [Authorize(Roles = "Admin")] // Uncomment if authorization is needed
+    [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
         private readonly GymManagementContext _context;

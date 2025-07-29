@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using MSSQLServer.EntitiesModels;
@@ -7,6 +8,7 @@ using System.Security.Claims;
 
 namespace GymMaster_RazorPages.Pages.Dashboard
 {
+    [Authorize(Roles = "Member")]
     public class MemberDashboardModel : PageModel
     {
         private readonly IUserService _userService;
@@ -17,8 +19,12 @@ namespace GymMaster_RazorPages.Pages.Dashboard
         public User CurrentUser { get; set; }
         public UserMembership CurrentMembership { get; set; }
 
-        // Changed from single trainer to list of active assignments
-        public List<TrainerAssignment> ActiveTrainerAssignments { get; set; } = new List<TrainerAssignment>();
+        // Changed to group assignments by membership plan
+        public Dictionary<int, List<TrainerAssignment>> TrainersByMembership { get; set; }
+            = new Dictionary<int, List<TrainerAssignment>>();
+
+        public List<UserMembership> MemberMemberships { get; set; } = new List<UserMembership>();
+
 
         public MemberDashboardModel(
             IUserService userService,
@@ -41,10 +47,26 @@ namespace GymMaster_RazorPages.Pages.Dashboard
             }
 
             // Load current membership
-            CurrentMembership = await _membershipService.GetCurrentMembershipAsync(userId);
+            MemberMemberships = await _membershipService.GetMembershipsByUserIdAsync(userId);
 
-            // Load all active trainer assignments
-            ActiveTrainerAssignments = await _trainerService.GetActiveTrainerAssignmentsByMemberIdAsync(userId);
+            CurrentMembership = MemberMemberships.FirstOrDefault(m =>
+        m.StartDate <= DateOnly.FromDateTime(DateTime.Today) &&
+        m.EndDate >= DateOnly.FromDateTime(DateTime.Today));
+
+            //CurrentMembership = await _membershipService.GetCurrentMembershipAsync(userId);
+
+            // Load all active trainer assignments and group by membership
+            var activeAssignments = await _trainerService.GetActiveTrainerAssignmentsByMemberIdAsync(userId);
+
+            if (activeAssignments != null && activeAssignments.Any())
+            {
+                TrainersByMembership = activeAssignments
+                    .GroupBy(a => a.MembershipId)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.ToList()
+                    );
+            }
 
             return Page();
         }
@@ -56,7 +78,18 @@ namespace GymMaster_RazorPages.Pages.Dashboard
                 // Reload data if validation fails
                 var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 CurrentMembership = await _membershipService.GetCurrentMembershipAsync(userId);
-                ActiveTrainerAssignments = await _trainerService.GetActiveTrainerAssignmentsByMemberIdAsync(userId);
+                var activeAssignments = await _trainerService.GetActiveTrainerAssignmentsByMemberIdAsync(userId);
+
+                if (activeAssignments != null && activeAssignments.Any())
+                {
+                    TrainersByMembership = activeAssignments
+                        .GroupBy(a => a.MembershipId)
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.ToList()
+                        );
+                }
+
                 return Page();
             }
 
@@ -73,7 +106,18 @@ namespace GymMaster_RazorPages.Pages.Dashboard
                 // Reload data if update fails
                 var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 CurrentMembership = await _membershipService.GetCurrentMembershipAsync(userId);
-                ActiveTrainerAssignments = await _trainerService.GetActiveTrainerAssignmentsByMemberIdAsync(userId);
+                var activeAssignments = await _trainerService.GetActiveTrainerAssignmentsByMemberIdAsync(userId);
+
+                if (activeAssignments != null && activeAssignments.Any())
+                {
+                    TrainersByMembership = activeAssignments
+                        .GroupBy(a => a.MembershipId)
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.ToList()
+                        );
+                }
+
                 return Page();
             }
         }

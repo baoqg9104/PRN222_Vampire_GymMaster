@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MSSQLServer.EntitiesModels;
@@ -10,6 +11,8 @@ using System.Threading.Tasks;
 
 namespace GymMaster_RazorPages.Pages.WorkoutSessions
 {
+    [Authorize(Roles = "Trainer")]
+
     public class CreateModel : PageModel
     {
         private readonly IWorkoutSessionService _workoutSessionService;

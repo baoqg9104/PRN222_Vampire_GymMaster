@@ -1,10 +1,12 @@
-using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services.Services;
+using System.Security.Claims;
 
 namespace GymMaster_RazorPages.Pages.BodyMeasurement;
 
+[Authorize(Roles = "Admin")]
 public class CreateModel : PageModel
 {
     private readonly IBodyMeasurementService _measurementService;

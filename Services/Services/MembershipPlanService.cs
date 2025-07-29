@@ -52,4 +52,5 @@ public class MembershipPlanService : IMembershipPlanService
     {
         return await _membershipPlanService.GetTotalMembershipPlansCountAsync();
     }
+
 }

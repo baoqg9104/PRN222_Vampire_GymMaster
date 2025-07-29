@@ -9,7 +9,7 @@ using Services.Services;
 
 namespace GymMaster_RazorPages.Pages.MembershipPlan
 {
-    // [Authorize(Roles = "Admin")] // Uncomment if needed
+    [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private readonly IMembershipPlanService _membershipPlanService;

@@ -17,4 +17,6 @@ public interface IMembershipPlanService
     Task<bool> DeleteAsync(int id);
     Task<int> GetActiveMembershipsCountAsync();
     Task<int> GetTotalMembershipPlansCountAsync();
+
+ 
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,8 @@ using System.Threading.Tasks;
 
 namespace GymMaster_RazorPages.Pages.WorkoutSessions
 {
+    [Authorize(Roles = "Trainer")]
+
     public class EditModel : PageModel
     {
         private readonly IWorkoutSessionService _workoutSessionService;

@@ -11,7 +11,7 @@ using Services.Services;
 namespace GymMaster_RazorPages.Pages.MembershipPlan
 {
     // Authorize 
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class DeleteModel : PageModel
     {
         private readonly IMembershipPlanService _membershipPlanService;

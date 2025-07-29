@@ -48,6 +48,11 @@ namespace Services.Services
             return await _userMembershipRepository.GetListAsync(searchTypeName, assignment, pageIndex, pageSize);
         }
 
+        public Task<List<UserMembership>> GetMembershipsByUserIdAsync(int userId)
+        {
+            return _userMembershipRepository.GetMembershipsByUserIdAsync(userId);
+        }
+
         public async Task<UserMembership> UpdateAsync(UserMembership user)
         {
             return await _userMembershipRepository.UpdateAsync(user);

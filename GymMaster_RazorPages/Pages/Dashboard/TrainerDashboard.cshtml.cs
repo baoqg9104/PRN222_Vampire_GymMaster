@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using System.Security.Claims;
 
 namespace GymMaster_RazorPages.Pages.Dashboard
 {
+    [Authorize(Roles = "Trainer")]
     public class TrainerDasboardModel : PageModel
     {
         private readonly GymManagementContext _context;

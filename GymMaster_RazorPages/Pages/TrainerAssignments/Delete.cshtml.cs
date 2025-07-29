@@ -1,11 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MSSQLServer.EntitiesModels;
 using Services.Services;
+using System.Threading.Tasks;
 
 namespace GymMaster_RazorPages.Pages.TrainerAssignments
 {
+    [Authorize(Roles = "Admin")]
+
     public class DeleteModel : PageModel
     {
         private readonly ITrainerAssignmentService _trainerAssignmentService;
