@@ -1,7 +1,7 @@
 ﻿@page  
 @model GymMaster_RazorPages.Pages.Dashboard.MemberDashboardModel
 @{
-    ViewData["Title"] = "Hồ sơ thành viên";
+    ViewData["Title"] = "Member Dashboard";
 }
  
 
@@ -10,7 +10,7 @@
         <div class="col-md-4">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5>Thông tin cá nhân</h5>
+                    <h5>Personal Information</h5>
                 </div>
                 <div class="card-body">
                     <form method="post">
@@ -24,37 +24,37 @@
                         </div>
 
                         <div class="form-group mb-3">
-                            <label asp-for="CurrentUser.FirstName" class="control-label">Tên</label>
+                            <label asp-for="CurrentUser.FirstName" class="control-label">First Name</label>
                             <input asp-for="CurrentUser.FirstName" class="form-control" />
                             <span asp-validation-for="CurrentUser.FirstName" class="text-danger"></span>
                         </div>
 
                         <div class="form-group mb-3">
-                            <label asp-for="CurrentUser.LastName" class="control-label">Họ</label>
+                            <label asp-for="CurrentUser.LastName" class="control-label">Last Name</label>
                             <input asp-for="CurrentUser.LastName" class="form-control" />
                             <span asp-validation-for="CurrentUser.LastName" class="text-danger"></span>
                         </div>
 
                         <div class="form-group mb-3">
-                            <label asp-for="CurrentUser.Phone" class="control-label">Điện thoại</label>
+                            <label asp-for="CurrentUser.Phone" class="control-label">Phone</label>
                             <input asp-for="CurrentUser.Phone" class="form-control" />
                             <span asp-validation-for="CurrentUser.Phone" class="text-danger"></span>
                         </div>
 
                         <div class="form-group mb-3">
-                            <label asp-for="CurrentUser.FitnessGoals" class="control-label">Mục tiêu tập luyện</label>
+                            <label asp-for="CurrentUser.FitnessGoals" class="control-label">Fitness Goals</label>
                             <textarea asp-for="CurrentUser.FitnessGoals" class="form-control" rows="3"></textarea>
                             <span asp-validation-for="CurrentUser.FitnessGoals" class="text-danger"></span>
                         </div>
 
                         <div class="form-group mb-3">
-                            <label asp-for="CurrentUser.MedicalNotes" class="control-label">Ghi chú sức khỏe</label>
+                            <label asp-for="CurrentUser.MedicalNotes" class="control-label">Medical Notes</label>
                             <textarea asp-for="CurrentUser.MedicalNotes" class="form-control" rows="3"></textarea>
                             <span asp-validation-for="CurrentUser.MedicalNotes" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Cập nhật</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
                         </div>
                     </form>
                 </div>
@@ -64,29 +64,29 @@
         <div class="col-md-8">
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
-                    <h5>Gói tập hiện tại</h5>
+                    <h5>Current membership plan</h5>
                 </div>
                 <div class="card-body">
                     @if (Model.CurrentMembership != null)
                     {
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Tên gói:</strong> @Model.CurrentMembership.Plan.Name</p>
-                                <p><strong>Ngày bắt đầu:</strong> @Model.CurrentMembership.StartDate.ToString("dd/MM/yyyy")</p>
-                                <p><strong>Ngày hết hạn:</strong> @Model.CurrentMembership.EndDate.ToString("dd/MM/yyyy")</p>
+                                <p><strong>Name:</strong> @Model.CurrentMembership.Plan.Name</p>
+                                <p><strong>Start date:</strong> @Model.CurrentMembership.StartDate.ToString("dd/MM/yyyy")</p>
+                                <p><strong>End date:</strong> @Model.CurrentMembership.EndDate.ToString("dd/MM/yyyy")</p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>Mô tả:</strong> @Model.CurrentMembership.Plan.Description</p>
-                                <p><strong>Giá:</strong> @Model.CurrentMembership.Plan.Price.ToString("C")</p>
-                                <a asp-page="/Membership/Upgrade" class="btn btn-sm btn-outline-primary">Nâng cấp gói</a>
+                                <p><strong>Description:</strong> @Model.CurrentMembership.Plan.Description</p>
+                                <p><strong>Price:</strong> @Model.CurrentMembership.Plan.Price.ToString("C")</p>
+                                <a asp-page="/Membership/Upgrade" class="btn btn-sm btn-outline-primary">Upgrade</a>
                             </div>
                         </div>
                     }
                     else
                     {
                         <div class="alert alert-warning">
-                            Bạn chưa đăng ký gói tập nào
-                            <a asp-page="/Membership/Register" class="alert-link">Đăng ký ngay</a>
+                            You have not registered for any membership plan yet.
+                            <a asp-page="/MembershipPlan/Index" class="alert-link">Subscribe now</a>
                         </div>
                     }
                 </div>
@@ -94,7 +94,7 @@
 
             <div class="card">
                 <div class="card-header bg-success text-white">
-                    <h5>Huấn luyện viên của bạn</h5>
+                    <h5>Your trainer</h5>
                 </div>
                 <div class="card-body">
                     @if (Model.ActiveTrainerAssignments != null && Model.ActiveTrainerAssignments.Any())
@@ -119,58 +119,58 @@
                                                 <p class="mb-1 text-muted">@assignment.Trainer.Email</p>
                                                 @if (!string.IsNullOrEmpty(assignment.Trainer.Specialization))
                                                 {
-                                                    <p class="mb-1"><strong>Chuyên môn:</strong> @assignment.Trainer.Specialization</p>
+                                                    <p class="mb-1"><strong>Specialization:</strong> @assignment.Trainer.Specialization</p>
                                                 }
                                                 @if (!string.IsNullOrEmpty(assignment.Trainer.Certification))
                                                 {
-                                                    <p class="mb-1"><strong>Chứng chỉ:</strong> @assignment.Trainer.Certification</p>
+                                                    <p class="mb-1"><strong>Certification:</strong> @assignment.Trainer.Certification</p>
                                                 }
                                                 @if (!string.IsNullOrEmpty(assignment.Goals))
                                                 {
-                                                    <p class="mb-1"><strong>Mục tiêu:</strong> @assignment.Goals</p>
+                                                    <p class="mb-1"><strong>Goals:</strong> @assignment.Goals</p>
                                                 }
                                             </div>
                                             <div class="col-md-4 text-end">
                                                 <div class="assignment-dates">
                                                     <p class="mb-1 text-primary">
                                                         <i class="fas fa-play-circle"></i>
-                                                        <strong>Bắt đầu:</strong><br>
+                                                        <strong>Start date:</strong><br>
                                                         <small>@assignment.StartDate.ToString("dd/MM/yyyy")</small>
                                                     </p>
                                                     @if (assignment.EndDate.HasValue)
                                                     {
                                                         <p class="mb-1 text-warning">
                                                             <i class="fas fa-stop-circle"></i>
-                                                            <strong>Kết thúc:</strong><br>
+                                                            <strong>End date:</strong><br>
                                                             <small>@assignment.EndDate.Value.ToString("dd/MM/yyyy")</small>
                                                         </p>
                                                         var daysLeft = (assignment.EndDate.Value.ToDateTime(TimeOnly.MinValue) - DateTime.Today).Days;
                                                         @if (daysLeft > 0)
                                                         {
-                                                            <span class="badge bg-info">Còn @daysLeft ngày</span>
+                                                            <span class="badge bg-info">@daysLeft days left</span>
                                                         }
                                                         else if (daysLeft == 0)
                                                         {
-                                                            <span class="badge bg-warning">Hết hạn hôm nay</span>
+                                                            <span class="badge bg-warning">Expires today</span>
                                                         }
                                                     }
                                                     else
                                                     {
                                                         <p class="mb-1 text-info">
                                                             <i class="fas fa-infinity"></i>
-                                                            <strong>Thời gian:</strong><br>
-                                                            <small>Không giới hạn</small>
+                                                            <strong>Duration:</strong><br>
+                                                            <small>Unlimited</small>
                                                         </p>
                                                     }
 
                                                     @* Hiển thị trạng thái *@
                                                     @if (isActive)
                                                     {
-                                                        <span class="badge bg-success">Đang hoạt động</span>
+                                                        <span class="badge bg-success">Active</span>
                                                     }
                                                     else if (isFuture)
                                                     {
-                                                        <span class="badge bg-info">Sắp bắt đầu</span>
+                                                        <span class="badge bg-info">Coming Soon</span>
                                                     }
                                                 </div>
                                             </div>
@@ -178,7 +178,7 @@
                                         <div class="mt-2">
                                             <a asp-page="/Trainer/Details" asp-route-id="@assignment.Trainer.UserId"
                                                class="btn btn-sm btn-outline-success me-2">
-                                                <i class="fas fa-eye"></i> Xem chi tiết
+                                                <i class="fas fa-eye"></i> View details
                                             </a>
                                             <small class="text-muted">
                                                 <i class="fas fa-id-card"></i>
@@ -193,8 +193,8 @@
                     else
                     {
                         <div class="alert alert-warning">
-                            Bạn chưa được phân công huấn luyện viên
-                            <a asp-page="/TrainerAssignments/Create" asp-route-memberId="@Model.CurrentUser.UserId" class="alert-link">Yêu cầu ngay</a>
+                            You have not been assigned a trainer yet.
+                            <a asp-page="/TrainerAssignments/Create" asp-route-memberId="@Model.CurrentUser.UserId" class="alert-link">Request Now</a>
                         </div>
                     }
                 </div>
@@ -203,9 +203,9 @@
     </div>
 </div>
 
-<form method="post" asp-page="/Account/Logout">
-    <button type="submit" class="btn btn-danger">Logout</button>
-</form>
+@* <form method="post" asp-page="/Account/Logout"> *@
+@*     <button type="submit" class="btn btn-danger">Logout</button> *@
+@* </form> *@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

@@ -1,0 +1,102 @@
+﻿@page "{planId:int}"
+@model GymMaster_RazorPages.Pages.MembershipPlan.SelectModel
+@{
+	ViewData["Title"] = "Confirm Membership Plan Selection";
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+	<div class="alert alert-danger alert-dismissible fade show" role="alert">
+		@TempData["ErrorMessage"]
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+}
+
+<div class="container mt-5">
+	<div class="row justify-content-center">
+		<div class="col-md-8">
+			<div class="card shadow">
+				<div class="card-header bg-primary text-white">
+					<h3 class="card-title mb-0">
+						<i class="fas fa-id-card me-2"></i>Confirm Plan Selection
+					</h3>
+				</div>
+				<div class="card-body">
+					<h4 class="text-primary mb-4">@Model.MembershipPlan.Name</h4>
+
+					<div class="row mb-4">
+						<div class="col-md-6">
+							<div class="mb-3">
+								<h5 class="text-muted">Duration</h5>
+								<p class="fs-5">@Model.MembershipPlan.DurationDays days</p>
+							</div>
+
+							<div class="mb-3">
+								<h5 class="text-muted">Price</h5>
+								<p class="fs-5 text-success fw-bold">$@Model.MembershipPlan.Price</p>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="mb-3">
+								<h5 class="text-muted">Status</h5>
+								<p>
+									@if (Model.MembershipPlan.IsActive == true)
+									{
+										<span class="badge bg-success">Active</span>
+									}
+									else
+									{
+										<span class="badge bg-secondary">Inactive</span>
+									}
+								</p>
+							</div>
+
+							@* <div class="mb-3"> *@
+							@*     <h5 class="text-muted">Plan ID</h5> *@
+							@*     <p class="text-muted">@Model.MembershipPlan.PlanId</p> *@
+							@* </div> *@
+						</div>
+					</div>
+
+					<div class="mb-4">
+						<h5 class="text-muted">Description</h5>
+						<p class="lead">@Model.MembershipPlan.Description</p>
+					</div>
+
+
+
+					<div class="d-flex justify-content-between align-items-end mt-5">
+						<div class="flex-grow-0">
+							<a asp-page="./Index" class="btn btn-outline-secondary">
+								<i class="fas fa-arrow-left me-2"></i>Back to Plans
+							</a>
+						</div>
+
+						<form method="post" class="flex-grow-1" style="max-width: 400px;">
+							<div class="mb-4 p-3 border rounded">
+								<div class="form-check form-switch">
+									<input class="form-check-input" type="checkbox" id="autoRenew" name="autoRenew" value="true" checked>
+									<input type="hidden" name="autoRenew" value="false">
+									<label class="form-check-label" for="autoRenew">
+										<strong>Auto Renew</strong>
+									</label>
+									<p class="text-muted small mt-1">
+										<i class="fas fa-info-circle me-1"></i>
+										When enabled, your membership will automatically renew at the end of each period.
+									</p>
+								</div>
+							</div>
+
+
+							<input type="hidden" name="planId" value="@Model.MembershipPlan.PlanId" />
+							<button type="submit" class="btn btn-primary">
+								<i class="fas fa-check-circle me-2"></i>Confirm Selection
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
